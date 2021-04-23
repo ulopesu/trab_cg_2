@@ -47,18 +47,13 @@ void Lutador::DesenhaBraco(GLfloat x, GLfloat y, GLfloat theta1, GLfloat theta2,
     }
     Cor *cor = new Cor(0.05, 0.05, 0.05);
     glPushMatrix();
-
         glTranslatef(x, y, rCabeca*(ALT_CAB_LUT-2));
-        glRotatef(theta1, 0, 0, 1);
 
         if(!ehMiniMapa){
-            if(x<0){
-                glRotatef(29.05, 0, 1, 0);
-            }
-            else {
-                glRotatef(-29.05, 0, 1, 0);
-            }
+            glRotatef(29.05, 1, 0, 0);
         }
+
+        glRotatef(theta1, 0, 0, 1);
 
         //Retangulo *ret = new Retangulo(tamBracos / 6, tamBracos, 0, 0);
         //ret->desenha(cor);
@@ -93,7 +88,9 @@ void Lutador::DesenhaBraco(GLfloat x, GLfloat y, GLfloat theta1, GLfloat theta2,
         Cor* cor_luva = new Cor("red");
         luva->DesenhaComCor(cor_luva);
 
+
     glPopMatrix();
+    
 
     free(cor_luva);
     free(luva);

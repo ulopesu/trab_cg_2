@@ -347,9 +347,11 @@ void display(void)
 
     if (tipoCam == 0){
         //imprimeTexto({0.1, 0.1, 0}, "Static Camera at a Distance", new Cor(0,1,0));
-        Coordenada pos;
-        lutador1->getXYZ(pos);
-        gluLookAt(pos.X, pos.Y, pos.Z, 0, 0, lut1rCabeca*ALT_GRADE, 0,0,1);
+        Coordenada posJog1;
+        Coordenada posJog2;
+        lutador1->getXYZ(posJog1);
+        lutador2->getXYZ(posJog2);
+        gluLookAt(posJog1.X, posJog1.Y, posJog1.Z, arenaWidth/2, arenaHeight/2, -lut1rCabeca*ALT_CAB_LUT, 0,0,1);
         //GLfloat theta = atan2(pos.Y, pos.X) * fromRad + 90;
 
     } else if (tipoCam == 1){
