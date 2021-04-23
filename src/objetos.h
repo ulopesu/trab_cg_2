@@ -8,7 +8,7 @@
 class Objeto
 {
 protected:
-    Coordenada ref;
+    Coordenada pos;
     Vertice *vtx;
     int numVtx;
 

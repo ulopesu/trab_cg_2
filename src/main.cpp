@@ -13,11 +13,15 @@
 #include "matrix.h"
 #include "tinyxml/tinyxml.h"
 
+#define N_MTX 4
 
 #define INC_KEY 2
 #define INC_KEYIDLE 1
 
-#define N_MTX 4
+// DIMENSOES
+// Obs: todos os valores abaixo seram multiplicados por lut1rCabeca
+#define ALT_GRADE ALT_CAB_LUT*3
+
 
 #define TOTAL_PONTOS_WIN 10
 
@@ -128,7 +132,7 @@ void imprimeReload()
     sprintf(str, "Press (R) to RELOAD!");
 
     Cor *cor = new Cor(1, 1, 1);
-    Coordenada pos = {0.4, 0.5, 0};
+    Coordenada pos = {0.7, 0.05, 0};
 
     imprimeTexto(pos, str, cor);
 
@@ -203,11 +207,25 @@ void mouse(int button, int state, int _x, int _y)
     }
 }
 
+void changeCamera(int angle, int w, int h)
+{
+    glMatrixMode(GL_PROJECTION);
+    gluPerspective(angle, (GLfloat)w / (GLfloat)h, 1, 150.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
 void keyPress(unsigned char key, int x, int y)
 {
     static bool textureEnebled = true;
     static bool lightingEnebled = true;
     static bool smoothEnebled = true;
+
+    //camXYAngle += x - lastX;
+    //camXZAngle += y - lastY;
+    //
+    //camXYAngle = (int)camXYAngle % 360;
+    //camXZAngle = (int)camXZAngle % 360;
 
     switch (key)
     {
@@ -271,6 +289,20 @@ void keyPress(unsigned char key, int x, int y)
         }
         lightingEnebled = !lightingEnebled;
         break;
+    case '+':
+        {
+            int inc = camAngle >= 180 ? 0 : 1;
+            camAngle += inc;
+            changeCamera(camAngle, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+            break;
+        }
+    case '-':
+        {
+            int inc = camAngle <= 5 ? 0 : 1;
+            camAngle -= inc;
+            changeCamera(camAngle, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+            break;
+        }
     case 27:
         free(arenaCor);
         free(lutador1->getCor());
@@ -278,6 +310,9 @@ void keyPress(unsigned char key, int x, int y)
         free(lutador1);
         free(lutador2);
         exit(0);
+        break;
+    default:
+        printf("\nKEY: %c -> INT: %d\n", key, key);
     }
     glutPostRedisplay();
 }
@@ -290,23 +325,10 @@ void keyup(unsigned char key, int x, int y)
 
 void display(void)
 {   
-    //glClearColor (0.0,0.0,0.0,1.0);
+    glClearColor (0.0,0.0,0.0,1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //glLoadIdentity();
+    glLoadIdentity();
 
-    if (tipoCam == 0){
-        //imprimeTexto({0.1, 0.1, 0}, "Static Camera at a Distance", new Cor(0,1,0));
-
-        //gluLookAt(0,0,0, 0,0,0, 0,0,1);
-    } else if (tipoCam == 1){
-    } else if (tipoCam == 2){
-    }
-
-
-
-
-    lutador1->Desenha();
-    lutador2->Desenha();
     imprimePlacar();
 
     if (lutador1->getPontos() >= TOTAL_PONTOS_WIN)
@@ -322,7 +344,56 @@ void display(void)
     {
         imprimeReload();
     }
-    glutSwapBuffers(); // Desenha the new frame of the game.
+
+    if (tipoCam == 0){
+        //imprimeTexto({0.1, 0.1, 0}, "Static Camera at a Distance", new Cor(0,1,0));
+        Coordenada pos;
+        lutador1->getXYZ(pos);
+        gluLookAt(pos.X, pos.Y, -pos.Z, 0, 0, lut1rCabeca*ALT_CAB_LUT, 0,0,1);
+        //GLfloat theta = atan2(pos.Y, pos.X) * fromRad + 90;
+
+    } else if (tipoCam == 1){
+        glTranslatef(0,0,-camDist);
+        glRotatef(camXZAngle,1,0,0);
+        glRotatef(camXYAngle,0,1,0);
+    } else if (tipoCam == 2){
+    }
+
+    GLfloat luzDIF[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat luzSPE[] = { 1.0, 1.0, 1.0, 1.0 };
+
+    // LUZ 0 - CONFIG
+    GLfloat luz0POS[] = { 0, 0, lut1rCabeca*7, 1.0 };
+    glLightfv(GL_LIGHT0, GL_POSITION, luz0POS);
+
+    // LUZ 1 - CONFIG
+    GLfloat luz1POS[] = { -arenaWidth, -arenaHeight, lut1rCabeca*(ALT_GRADE+2), 1.0 };
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, luzDIF);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, luzSPE);
+    glLightfv(GL_LIGHT1, GL_POSITION, luz1POS);
+
+    // LUZ 2 - CONFIG
+    GLfloat luz2POS[] = { -arenaWidth, arenaHeight, lut1rCabeca*(ALT_GRADE+2), 1.0 };
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, luzDIF);
+    glLightfv(GL_LIGHT2, GL_SPECULAR, luzSPE);
+    glLightfv(GL_LIGHT2, GL_POSITION, luz2POS);
+
+    // LUZ 3 - CONFIG
+    GLfloat luz3POS[] = { arenaWidth, -arenaHeight, lut1rCabeca*(ALT_GRADE+2), 1.0 };
+    glLightfv(GL_LIGHT3, GL_DIFFUSE, luzDIF);
+    glLightfv(GL_LIGHT3, GL_SPECULAR, luzSPE);
+    glLightfv(GL_LIGHT3, GL_POSITION, luz3POS);
+
+    // LUZ 4 - CONFIG
+    GLfloat luz4POS[] = { arenaWidth, arenaHeight, lut1rCabeca*(ALT_GRADE+2), 1.0 };
+    glLightfv(GL_LIGHT4, GL_DIFFUSE, luzDIF);
+    glLightfv(GL_LIGHT4, GL_SPECULAR, luzSPE);
+    glLightfv(GL_LIGHT4, GL_POSITION, luz4POS);
+
+    lutador1->Desenha();
+    lutador2->Desenha();
+
+    glutSwapBuffers();
 }
 
 void ResetKeyStatus()
@@ -332,16 +403,11 @@ void ResetKeyStatus()
         keyStatus[i] = 0;
 }
 
-void changeCamera(int angle, int w, int h)
-{
-    glMatrixMode(GL_PROJECTION);
+void reshape (int w, int h) {
 
-    glLoadIdentity();
+    glViewport (0, 0, (GLsizei)w, (GLsizei)h);
 
-    gluPerspective(angle,
-                   (GLfloat)w / (GLfloat)h, 1, 150.0);
-
-    glMatrixMode(GL_MODELVIEW);
+    changeCamera(camAngle, w, h);
 }
 
 void init(void)
@@ -362,13 +428,17 @@ void init(void)
             -100, 100);                            //     Z
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glEnable(GL_DEPTH_TEST);
-
+    
     lutador1->setOponente(lutador2);
     lutador2->setOponente(lutador1);
     lutador1->dirOponente();
     lutador2->dirOponente();
+    
     glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHT2);
+    glEnable(GL_LIGHT3);
+    glEnable(GL_LIGHT4);
 }
 
 void idle(void)
@@ -535,7 +605,7 @@ int main(int argc, char *argv[])
     lutador2 = new Lutador(nome2, pos2, lut2cor, 90, lut2rCabeca, arenaWidth, arenaHeight);
 
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
 
     winWidth = arenaWidth;
     winHeight = arenaHeight;
@@ -547,6 +617,7 @@ int main(int argc, char *argv[])
     glutDisplayFunc(display);
     glutKeyboardFunc(keyPress);
     glutIdleFunc(idle);
+    //glutReshapeFunc (reshape);
     glutKeyboardUpFunc(keyup);
     glutMotionFunc(drag);
     glutMouseFunc(mouse);

@@ -1,19 +1,26 @@
 #include "objetos.h"
 
+static GLfloat materialColorA[] = {0.1, 0.1, 0.1, 1};
+static GLfloat materialColorD[] = {0.2, 0.2, 0.2, 1};
+static GLfloat mat_specular[] = {0.3, 0.3, 0.3, 1};
+static GLfloat mat_shininess[] = {100.0};
 
 void Objeto::DesenhaComCor(Cor *cor) { 
-    glPushAttrib(GL_ENABLE_BIT);
-        glDisable(GL_LIGHTING);
-        glDisable(GL_TEXTURE_2D);
+    glColor3f(1, 1, 1);
 
-        glColor3fv(cor->Cor2Vetor());
-        glBegin(GL_TRIANGLE_STRIP);
-        for (int i = 0; i < numVtx; i++)
-        {
-            glNormal3f(vtx[i].normal.X , vtx[i].normal.Y, vtx[i].normal.Z);
-            glVertex3f(vtx[i].ponto.X + ref.X, vtx[i].ponto.Y + ref.Y, vtx[i].ponto.Z + ref.Z);
-        }
-    glPopAttrib();
+    glMaterialfv(GL_FRONT, GL_EMISSION, cor->Cor2Vetor());
+    glMaterialfv(GL_FRONT, GL_AMBIENT, materialColorA);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColorD);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+    glBegin(GL_TRIANGLE_STRIP);
+    for (int i = 0; i < numVtx; i++)
+    {
+        glNormal3f(vtx[i].normal.X , vtx[i].normal.Y, vtx[i].normal.Z);
+        glVertex3f(vtx[i].ponto.X + pos.X, vtx[i].ponto.Y + pos.Y, vtx[i].ponto.Z + pos.Z);
+    }
+    glEnd();
 }
 
 
@@ -38,7 +45,7 @@ void Objeto::DesenhaComTextura(GLuint texture)
     {
         glNormal3f(vtx[i].normal.X , vtx[i].normal.Y, vtx[i].normal.Z);
         glTexCoord2f(vtx[i].U, vtx[i].V);
-        glVertex3f(vtx[i].ponto.X + ref.X, vtx[i].ponto.Y + ref.Y, vtx[i].ponto.Z + ref.Z);
+        glVertex3f(vtx[i].ponto.X + pos.X, vtx[i].ponto.Y + pos.Y, vtx[i].ponto.Z + pos.Z);
     }
     glEnd();
 }

@@ -44,6 +44,8 @@ enum LadoSoco
 
 #define VEL_BOOT 0.2
 
+#define ALT_CAB_LUT 6
+
 class Lutador
 {
     string gNome;
@@ -51,7 +53,7 @@ class Lutador
     int TAM_ARENA_X;
     int TAM_ARENA_Y;
 
-    Coordenada gPonto;
+    Coordenada gPos;
 
     Cor *cor;
 
@@ -74,7 +76,7 @@ class Lutador
     GLfloat gdSoco;
 
     Lutador *gOponente;
-    int gPontos;
+    int gPoss;
 
     GLfloat gTheta1_R_Ant;
     GLfloat gdiffTheta1_R;
@@ -97,11 +99,11 @@ private:
     void DesenhaBraco(GLfloat x, GLfloat y, GLfloat theta1, GLfloat theta2,
                       GLfloat tamBracos, GLfloat rLuvas);
 
-    void DesenhaNariz(GLfloat x, GLfloat y, Cor *_cor, GLfloat rNariz);
+    void DesenhaNariz(GLfloat x, GLfloat y);
 
-    void DesenhaCabeca(GLfloat x, GLfloat y, Cor *_cor, GLfloat rCabeca);
+    void DesenhaCabeca(GLfloat x, GLfloat y);
 
-    void DesenhaRaioColisao(GLfloat x, GLfloat y, Cor *_cor, GLfloat rClsao);
+    void DesenhaRaioColisao(GLfloat x, GLfloat y);
 
     void DesenhaLutador(GLfloat x, GLfloat y, Cor *cor,
                         GLfloat theta, GLfloat theta1_R, GLfloat theta2_R,
@@ -122,17 +124,17 @@ public:
 
     void addPontos(int pontos)
     {
-        gPontos += pontos;
+        gPoss += pontos;
     }
 
     int getPontos()
     {
-        return gPontos;
+        return gPoss;
     }
 
     void Desenha()
     {
-        DesenhaLutador(gPonto.X, gPonto.Y, cor, gTheta,
+        DesenhaLutador(gPos.X, gPos.Y, cor, gTheta,
                        gTheta1_R, gTheta2_R,
                        gTheta1_L, gTheta2_L,
                        rCabeca, tamBracos,
@@ -144,16 +146,16 @@ public:
 
     void getXYT(GLfloat &x, GLfloat &y, GLfloat &dir)
     {
-        x = gPonto.X;
-        y = gPonto.Y;
+        x = gPos.X;
+        y = gPos.Y;
         dir = gTheta;
     }
 
     void getXYZ(Coordenada &ponto)
     {
-        ponto.X = gPonto.X;
-        ponto.Y = gPonto.Y;
-        ponto.Z = gPonto.Z;
+        ponto.X = gPos.X;
+        ponto.Y = gPos.Y;
+        ponto.Z = gPos.Z;
     }
 
     bool getSocoStatus()
@@ -189,10 +191,9 @@ public:
 
     void dirOponente()
     {
-        GLfloat xOp, yOp, dirOp, sentido;
+        GLfloat xOp, yOp, dirOp;
         gOponente->getXYT(xOp, yOp, dirOp);
-        GLfloat h = dist(gPonto.X, gPonto.Y, xOp, yOp);
-        gTheta = atan2(gPonto.Y - yOp, gPonto.X - xOp) * fromRad + 90;
+        gTheta = atan2(gPos.Y - yOp, gPos.X - xOp) * fromRad + 90;
     }
 };
 

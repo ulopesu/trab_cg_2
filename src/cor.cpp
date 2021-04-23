@@ -10,29 +10,31 @@ Cor::Cor(GLfloat r, GLfloat g, GLfloat b)
 }
 
 Cor::Cor(string nameCor)
-{
+{   
+    vCor = (GLfloat*) malloc(sizeof(GLfloat)*4); 
     if (nameCor == "red")
     {
-        R = 1;
-        G = 0;
-        B = 0;
+        R = vCor[0] = 1;
+        G = vCor[1] = 0.2;
+        B = vCor[2] = 0.2;
     }
     else if (nameCor == "green")
     {
-        R = 0;
-        G = 1;
-        B = 0;
+        R = vCor[0] = 0.2;
+        G = vCor[1] = 1;
+        B = vCor[2] = 0.2;
     }
     else if (nameCor == "blue")
     {
-        R = 0;
-        G = 0;
-        B = 1;
+        R = vCor[0] = 0.2;
+        G = vCor[1] = 0.2;
+        B = vCor[2] = 1;
     } else {
-        R = 1;
-        G = 1;
-        B = 1;
+        R = vCor[0] = 1;
+        G = vCor[1] = 1;
+        B = vCor[2] = 1;
     }
+    vCor[3] = 1;
 }
 
 GLfloat Cor::getR()
