@@ -86,6 +86,8 @@ class Lutador
 
     bool gEhBoot;
 
+    bool ehMiniMapa;
+
 private:
     void getPosLuvaR(GLfloat &xL, GLfloat &yL);
     void getPosLuvaL(GLfloat &xL, GLfloat &yL);
@@ -132,8 +134,9 @@ public:
         return gPoss;
     }
 
-    void Desenha()
-    {
+    void Desenha(bool ehMM)
+    {   
+        ehMiniMapa = ehMM;
         DesenhaLutador(gPos.X, gPos.Y, cor, gTheta,
                        gTheta1_R, gTheta2_R,
                        gTheta1_L, gTheta2_L,

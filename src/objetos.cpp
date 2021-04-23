@@ -1,16 +1,15 @@
 #include "objetos.h"
 
-static GLfloat materialColorA[] = {0.1, 0.1, 0.1, 1};
-static GLfloat materialColorD[] = {0.2, 0.2, 0.2, 1};
+GLfloat materialEmission[] = { 0.0, 0.0, 0.0, 1.0};
 static GLfloat mat_specular[] = {0.3, 0.3, 0.3, 1};
 static GLfloat mat_shininess[] = {100.0};
 
 void Objeto::DesenhaComCor(Cor *cor) { 
     glColor3f(1, 1, 1);
 
-    glMaterialfv(GL_FRONT, GL_EMISSION, cor->Cor2Vetor());
-    glMaterialfv(GL_FRONT, GL_AMBIENT, materialColorA);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColorD);
+    glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, cor->Cor2Vetor());
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, cor->Cor2Vetor());
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 

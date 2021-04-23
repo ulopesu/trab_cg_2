@@ -349,11 +349,11 @@ void display(void)
         //imprimeTexto({0.1, 0.1, 0}, "Static Camera at a Distance", new Cor(0,1,0));
         Coordenada pos;
         lutador1->getXYZ(pos);
-        gluLookAt(pos.X, pos.Y, -pos.Z, 0, 0, lut1rCabeca*ALT_CAB_LUT, 0,0,1);
+        gluLookAt(pos.X, pos.Y, pos.Z, 0, 0, lut1rCabeca*ALT_GRADE, 0,0,1);
         //GLfloat theta = atan2(pos.Y, pos.X) * fromRad + 90;
 
     } else if (tipoCam == 1){
-        glTranslatef(0,0,-camDist);
+        glTranslatef(0,0,-lut1rCabeca*ALT_GRADE);
         glRotatef(camXZAngle,1,0,0);
         glRotatef(camXYAngle,0,1,0);
     } else if (tipoCam == 2){
@@ -390,8 +390,9 @@ void display(void)
     glLightfv(GL_LIGHT4, GL_SPECULAR, luzSPE);
     glLightfv(GL_LIGHT4, GL_POSITION, luz4POS);
 
-    lutador1->Desenha();
-    lutador2->Desenha();
+    bool ehMM = tipoCam == 1;
+    lutador1->Desenha(ehMM);
+    lutador2->Desenha(ehMM);
 
     glutSwapBuffers();
 }
@@ -425,7 +426,7 @@ void init(void)
     glMatrixMode(GL_PROJECTION);
     glOrtho(-(arenaWidth / 2), (arenaWidth / 2),   //     X
             -(arenaHeight / 2), (arenaHeight / 2), //     Y
-            -100, 100);                            //     Z
+            -10000, 10000);                            //     Z
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     
