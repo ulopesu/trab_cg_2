@@ -9,9 +9,13 @@
 #include <string>
 using namespace std;
 
-#include "coordenada.h"
 #include "cor.h"
 #include "matrix.h"
+
+#include "esfera.h"
+
+#include "circulo.h"
+#include "retangulo.h"
 
 using namespace std;
 

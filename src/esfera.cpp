@@ -1,7 +1,8 @@
 #include "esfera.h"
 
-Esfera::Esfera(GLfloat r, GLfloat s)
-{
+Esfera::Esfera(Coordenada pos, GLfloat r, GLfloat s)
+{   
+    ref = pos;
     raio = r;
     space = s;
 

@@ -2,7 +2,6 @@
 
 
 void Objeto::DesenhaComCor(Cor *cor) { 
-
     glPushAttrib(GL_ENABLE_BIT);
         glDisable(GL_LIGHTING);
         glDisable(GL_TEXTURE_2D);
@@ -12,7 +11,7 @@ void Objeto::DesenhaComCor(Cor *cor) {
         for (int i = 0; i < numVtx; i++)
         {
             glNormal3f(vtx[i].normal.X , vtx[i].normal.Y, vtx[i].normal.Z);
-            glVertex3f(vtx[i].ponto.X, vtx[i].ponto.Y, vtx[i].ponto.Z);
+            glVertex3f(vtx[i].ponto.X + ref.X, vtx[i].ponto.Y + ref.Y, vtx[i].ponto.Z + ref.Z);
         }
     glPopAttrib();
 }
@@ -39,7 +38,7 @@ void Objeto::DesenhaComTextura(GLuint texture)
     {
         glNormal3f(vtx[i].normal.X , vtx[i].normal.Y, vtx[i].normal.Z);
         glTexCoord2f(vtx[i].U, vtx[i].V);
-        glVertex3f(vtx[i].ponto.X, vtx[i].ponto.Y, vtx[i].ponto.Z);
+        glVertex3f(vtx[i].ponto.X + ref.X, vtx[i].ponto.Y + ref.Y, vtx[i].ponto.Z + ref.Z);
     }
     glEnd();
 }

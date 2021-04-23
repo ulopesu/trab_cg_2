@@ -1,7 +1,4 @@
 #include "lutador.h"
-#include "soco.h"
-#include "circulo.h"
-#include "retangulo.h"
 
 Lutador::Lutador(string nome, Coordenada ponto, Cor *_cor,
                  GLfloat _theta, GLfloat _tam,
@@ -76,7 +73,8 @@ void Lutador::DesenhaNariz(GLfloat x, GLfloat y, Cor *_cor, GLfloat rNariz)
 }
 
 void Lutador::DesenhaCabeca(GLfloat x, GLfloat y, Cor *_cor, GLfloat rCabeca)
-{
+{   
+
     Circulo *circ = new Circulo(rCabeca, 100, x, y);
     circ->desenhaComBorda(_cor);
     free(circ);

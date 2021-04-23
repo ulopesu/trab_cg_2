@@ -13,7 +13,7 @@ private:
     GLfloat space;
 
 public:
-    Esfera(GLfloat r, GLfloat s);
+    Esfera(Coordenada pos, GLfloat r, GLfloat s);
 };
 
 #endif /* ESFERA_H */
