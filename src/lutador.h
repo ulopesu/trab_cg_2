@@ -55,7 +55,9 @@ class Lutador
 
     Coordenada gPos;
 
-    Cor *cor;
+    Cor *gCorCabeca;
+
+    Cor *gCorCorpo;
 
     GLfloat gTheta;
 
@@ -98,16 +100,19 @@ private:
     bool colisaoY(GLfloat dXY);
     void darSocoRL(GLfloat dSoco);
     void voltarSoco(GLfloat dSoco);
-    void DesenhaBraco(GLfloat x, GLfloat y, GLfloat theta1, GLfloat theta2,
+
+    void DesenhaCorpo(Coordenada pos);
+
+    void DesenhaBraco(Coordenada pos, GLfloat theta1, GLfloat theta2,
                       GLfloat tamBracos, GLfloat rLuvas);
 
-    void DesenhaNariz(GLfloat x, GLfloat y);
+    void DesenhaNariz(Coordenada pos);
 
-    void DesenhaCabeca(GLfloat x, GLfloat y);
+    void DesenhaCabeca(Coordenada pos);
 
-    void DesenhaRaioColisao(GLfloat x, GLfloat y);
+    void DesenhaRaioColisao(Coordenada pos);
 
-    void DesenhaLutador(GLfloat x, GLfloat y, Cor *cor,
+    void DesenhaLutador(Coordenada pos, Cor *cor,
                         GLfloat theta, GLfloat theta1_R, GLfloat theta2_R,
                         GLfloat theta1_L, GLfloat theta2_L, GLfloat rCab,
                         GLfloat tBracos, GLfloat rLvs, GLfloat rClsao);
@@ -137,7 +142,7 @@ public:
     void Desenha(bool ehMM)
     {   
         ehMiniMapa = ehMM;
-        DesenhaLutador(gPos.X, gPos.Y, cor, gTheta,
+        DesenhaLutador(gPos, gCorCabeca, gTheta,
                        gTheta1_R, gTheta2_R,
                        gTheta1_L, gTheta2_L,
                        rCabeca, tamBracos,
@@ -179,7 +184,7 @@ public:
 
     Cor *getCor()
     {
-        return cor;
+        return gCorCabeca;
     }
 
     bool ehBoot()

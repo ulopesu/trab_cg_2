@@ -2,6 +2,7 @@
 #define OBJETO_H
 
 #include <GL/gl.h>
+#include <GL/glut.h>
 #include "cor.h"
 #include "vertice.h"
 
@@ -19,5 +20,7 @@ public:
     void DesenhaComCor(Cor *cor);
     void DesenhaComTextura(GLuint texture);
 };
+
+void DenhaCuboGLComCor(Coordenada posRelativa, Coordenada escala, Cor *cor);
 
 #endif /* OBJETO_H */

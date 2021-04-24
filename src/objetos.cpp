@@ -25,16 +25,12 @@ void Objeto::DesenhaComCor(Cor *cor) {
 
 void Objeto::DesenhaComTextura(GLuint texture)
 {
-    GLfloat materialEmission[] = {0.10, 0.10, 0.10, 1};
-    GLfloat materialColorA[] = {0.2, 0.2, 0.2, 1};
-    GLfloat materialColorD[] = {1.0, 1.0, 1.0, 1};
+    GLfloat materialEmission[] = {0.0, 0.0, 0.0, 1};
     GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1};
     GLfloat mat_shininess[] = {100.0};
     glColor3f(1, 1, 1);
 
     glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, materialColorA);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColorD);
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
@@ -47,4 +43,26 @@ void Objeto::DesenhaComTextura(GLuint texture)
         glVertex3f(vtx[i].ponto.X + pos.X, vtx[i].ponto.Y + pos.Y, vtx[i].ponto.Z + pos.Z);
     }
     glEnd();
+}
+
+
+
+void DenhaCuboGLComCor(Coordenada posRelativa, Coordenada escala, Cor *cor){ 
+    
+    GLfloat materialEmission[] = { 0.0, 0.0, 0.0, 1.0};
+    static GLfloat mat_specular[] = {0.3, 0.3, 0.3, 1};
+    static GLfloat mat_shininess[] = {100.0};
+
+    glPushMatrix();
+        glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
+        glMaterialfv(GL_FRONT, GL_AMBIENT, cor->Cor2Vetor());
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, cor->Cor2Vetor());
+        glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+        glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+        glColor3fv(cor->Cor2Vetor());
+        glScalef(escala.X, escala.Y, escala.Z);
+        glTranslatef(posRelativa.X, posRelativa.Y, posRelativa.Z);
+        glutSolidCube(1.0);
+    glPopMatrix();
 }

@@ -351,7 +351,7 @@ void display(void)
         Coordenada posJog2;
         lutador1->getXYZ(posJog1);
         lutador2->getXYZ(posJog2);
-        gluLookAt(posJog1.X, posJog1.Y, posJog1.Z, arenaWidth/2, arenaHeight/2, -lut1rCabeca*ALT_CAB_LUT, 0,0,1);
+        gluLookAt(posJog1.X, posJog1.Y, posJog1.Z, 0, -arenaHeight/2, -lut1rCabeca*ALT_CAB_LUT, 0,0,1);
         //GLfloat theta = atan2(pos.Y, pos.X) * fromRad + 90;
 
     } else if (tipoCam == 1){
