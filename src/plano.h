@@ -16,9 +16,9 @@ class Plano: public Objeto
 {   
 private:
     D3 dimensao;
-    posPlano pos;
+    posPlano posNormal;
 public:
-    Plano(D3 dimensao, posPlano pos);
+    Plano(D3 dimensao, posPlano posNormal);
     void DesenhaComCor(Cor cor){
         Objeto::DesenhaComCor(cor, GL_QUADS);
     };

@@ -1,19 +1,33 @@
 #include "plano.h"
 
-Plano::Plano(D3 dimensao, posPlano pos)
-{
+Plano::Plano(D3 dimensao, posPlano posNormal)
+{   
+    numVtx=4;
+    pos = {0,0,0};
     int i;
-    vtx = new Vertice[4];
+    vtx = new Vertice[numVtx];
 
-    switch (pos)
+    vtx[0].V = 0;
+    vtx[0].U = 0;
+
+    vtx[1].V = 0;
+    vtx[1].U = 1;
+
+    vtx[2].V = 1;
+    vtx[2].U = 1;
+
+    vtx[3].V = 1;
+    vtx[3].U = 0;
+
+    switch (posNormal)
     {
     case X:
-        vtx[1].ponto = {dimensao.Z, -dimensao.X, -dimensao.Y};
-        vtx[2].ponto = {dimensao.Z, -dimensao.X, +dimensao.Y};
-        vtx[3].ponto = {dimensao.Z, +dimensao.X, +dimensao.Y};
-        vtx[4].ponto = {dimensao.Z, +dimensao.X, -dimensao.Y};
+        vtx[0].ponto = {dimensao.Z, -dimensao.X, -dimensao.Y};
+        vtx[1].ponto = {dimensao.Z, -dimensao.X, +dimensao.Y};
+        vtx[2].ponto = {dimensao.Z, +dimensao.X, +dimensao.Y};
+        vtx[3].ponto = {dimensao.Z, +dimensao.X, -dimensao.Y};
 
-        for (i = 0; i < 4; i++)
+        for (i = 0; i < numVtx; i++)
         {
             vtx[i].normal.X = dimensao.Z > 0 ? -1 : 1;
             vtx[i].normal.Y = 0;
@@ -21,12 +35,12 @@ Plano::Plano(D3 dimensao, posPlano pos)
         }
         break;
     case Y:
-        vtx[1].ponto = {-dimensao.X, dimensao.Z, -dimensao.Y};
-        vtx[2].ponto = {-dimensao.X, dimensao.Z, +dimensao.Y};
-        vtx[3].ponto = {+dimensao.X, dimensao.Z, +dimensao.Y};
-        vtx[4].ponto = {+dimensao.X, dimensao.Z, -dimensao.Y};
+        vtx[0].ponto = {-dimensao.X, dimensao.Z, -dimensao.Y};
+        vtx[1].ponto = {-dimensao.X, dimensao.Z, +dimensao.Y};
+        vtx[2].ponto = {+dimensao.X, dimensao.Z, +dimensao.Y};
+        vtx[3].ponto = {+dimensao.X, dimensao.Z, -dimensao.Y};
 
-        for (i = 0; i < 4; i++)
+        for (i = 0; i < numVtx; i++)
         {
             vtx[i].normal.X = 0;
             vtx[i].normal.Y = dimensao.Z > 0 ? -1 : 1;
@@ -34,12 +48,12 @@ Plano::Plano(D3 dimensao, posPlano pos)
         }
         break;
     case Z:
-        vtx[1].ponto = {-dimensao.X, -dimensao.Y, dimensao.Z};
-        vtx[2].ponto = {-dimensao.X, +dimensao.Y, dimensao.Z};
-        vtx[3].ponto = {+dimensao.X, +dimensao.Y, dimensao.Z};
-        vtx[4].ponto = {+dimensao.X, -dimensao.Y, dimensao.Z};
+        vtx[0].ponto = {-dimensao.X, -dimensao.Y, dimensao.Z};
+        vtx[1].ponto = {-dimensao.X, +dimensao.Y, dimensao.Z};
+        vtx[2].ponto = {+dimensao.X, +dimensao.Y, dimensao.Z};
+        vtx[3].ponto = {+dimensao.X, -dimensao.Y, dimensao.Z};
 
-        for (i = 0; i < 4; i++)
+        for (i = 0; i < numVtx; i++)
         {
             vtx[i].normal.X = 0;
             vtx[i].normal.Y = 0;

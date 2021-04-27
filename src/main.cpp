@@ -320,8 +320,8 @@ void keyup(unsigned char key, int x, int y)
 }
 
 void desenhaArena(){
-    Plano chao = Plano({arenaWidth, arenaHeight, 0}, Z);
-    chao.DesenhaComCor(Cor((RGB){1,1,1}));
+    Plano chao = Plano({arenaWidth/2, arenaHeight/2, 0}, Z);
+    chao.DesenhaComCor(Cor((RGB){0.1,0.1,0.8}));
 }
 
 void display(void)
@@ -409,7 +409,7 @@ void display(void)
     glLightfv(GL_LIGHT4, GL_SPECULAR, luzSPE);
     glLightfv(GL_LIGHT4, GL_POSITION, luz4POS);
 
-    //desenhaArena();
+    desenhaArena();
     lutador1->Desenha();
     lutador2->Desenha();
 
