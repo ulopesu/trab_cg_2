@@ -12,11 +12,11 @@ Circulo::Circulo(GLfloat _raio, int _nPts, GLfloat _gX, GLfloat _gY)
     gY = _gY;
 }
 
-void Circulo::desenhaPontos(GLfloat pSize, Cor* _cor)
+void Circulo::desenhaPontos(GLfloat pSize, Cor _cor)
 {
     GLfloat angle;
     int i;
-    glColor3f(_cor->getR(), _cor->getG(), _cor->getB());
+    glColor3f(_cor.getR(), _cor.getG(), _cor.getB());
     glPointSize(pSize);
     glBegin(GL_POINTS);
     for (i = 0; i < nPts; i++)
@@ -30,12 +30,11 @@ void Circulo::desenhaPontos(GLfloat pSize, Cor* _cor)
     glEnd();
 }
 
-
-void Circulo::desenhaCompleto(Cor* _cor)
+void Circulo::desenhaCompleto(Cor _cor)
 {
     GLfloat angle;
     int i;
-    glColor3f(_cor->getR(), _cor->getG(), _cor->getB());
+    glColor3f(_cor.getR(), _cor.getG(), _cor.getB());
     glBegin(GL_POLYGON);
     for (i = 0; i < nPts; i++)
     {
@@ -45,11 +44,11 @@ void Circulo::desenhaCompleto(Cor* _cor)
     glEnd();
 }
 
-void Circulo::desenhaBorda(GLfloat pSize, Cor* _cor)
+void Circulo::desenhaBorda(GLfloat pSize, Cor _cor)
 {
     GLfloat angle;
     int i;
-    glColor3f(_cor->getR(), _cor->getG(), _cor->getB());
+    glColor3f(_cor.getR(), _cor.getG(), _cor.getB());
     glPointSize(pSize);
     glBegin(GL_LINE_LOOP);
     for (i = 0; i < nPts; i++)
@@ -60,15 +59,17 @@ void Circulo::desenhaBorda(GLfloat pSize, Cor* _cor)
     glEnd();
 }
 
-void Circulo::desenhaComBorda(Cor* _cor)
+void Circulo::desenhaComBorda(Cor _cor)
 {   
-    desenhaCompleto(new Cor(_cor->getR()-0.2, _cor->getG()-0.2, _cor->getG()-0.2));
-    this->raio-=2;
+    GLfloat dRGB = dRGB;
+    RGB rgb = {_cor.getR() - dRGB, _cor.getG() - dRGB, _cor.getG() - dRGB};
+    desenhaCompleto(Cor(rgb));
+    this->raio -= 2;
 
     GLfloat angle;
     int i;
 
-    glColor3f(_cor->getR(), _cor->getG(), _cor->getB());
+    glColor3f(_cor.getR(), _cor.getG(), _cor.getB());
     glBegin(GL_POLYGON);
     for (i = 0; i < nPts; i++)
     {
@@ -76,5 +77,4 @@ void Circulo::desenhaComBorda(Cor* _cor)
         glVertex2f(gX + raio * cos(angle), gY + raio * sin(angle));
     }
     glEnd();
-    
 }

@@ -9,7 +9,7 @@
 class Objeto
 {
 protected:
-    Coordenada pos;
+    D3 pos;
     Vertice *vtx;
     int numVtx;
 
@@ -18,10 +18,10 @@ public:
     };
     void free_obj();
 
-    void DesenhaComCor(Cor *cor);
-    void DesenhaComTextura(GLuint texture);
+    void DesenhaComCor(Cor cor, int glTipo);
+    void DesenhaComTextura(GLuint texture, int glTipo);
 };
 
-void DenhaCuboGLComCor(Coordenada posRelativa, Coordenada escala, Cor *cor);
+void DenhaCuboGLComCor(D3 posRelativa, D3 escala, Cor cor);
 
 #endif /* OBJETO_H */

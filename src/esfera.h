@@ -11,7 +11,13 @@ private:
     GLfloat raio;
     GLfloat space;
 public:
-    Esfera(Coordenada xyz, GLfloat r, GLfloat s);
+    Esfera(D3 xyz, GLfloat r, GLfloat s);
+    void DesenhaComCor(Cor cor){
+        Objeto::DesenhaComCor(cor, GL_TRIANGLE_STRIP);
+    };
+    void DesenhaComTextura(GLuint texture){
+        Objeto::DesenhaComTextura(texture, GL_TRIANGLE_STRIP);
+    };
 };
 
 #endif /* ESFERA_H */

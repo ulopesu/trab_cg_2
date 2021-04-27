@@ -1,13 +1,13 @@
 #include <GL/gl.h>
-#include "coordenada.h"
+#include "d3.h"
 
 typedef struct
 {
-    // Coordenadas
-    Coordenada ponto;
+    // RGBs
+    D3 ponto;
 
     // Normal
-    Coordenada normal;
+    D3 normal;
 
     // Textura
     GLfloat U;

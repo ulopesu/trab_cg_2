@@ -1,12 +1,11 @@
 #include "lutador.h"
 
-Lutador::Lutador(string nome, Coordenada ponto, Cor *_cor,
+Lutador::Lutador(string nome, D3 ponto, Cor *_cor,
                  GLfloat _theta, GLfloat _tam,
                  GLfloat TA_X, GLfloat TA_Y)
 {
     gNome = nome;
     gEhBoot = false;
-    ehMiniMapa = false;
 
     // PRESET LOCALIZAÇÃO E DIREÇÃO
     TAM_ARENA_X = TA_X;
@@ -25,7 +24,7 @@ Lutador::Lutador(string nome, Coordenada ponto, Cor *_cor,
     rCabeca = _tam * 0.5;
     gPos = ponto;
     gCorCabeca = _cor;
-    gCorCorpo = new Cor(0.8, 0.8, 0.8);
+    gCorCorpo = new Cor((RGB){0.8, 0.8, 0.8});
     rNariz = rCabeca / 5;
     tamBracos = rCabeca * 2;
     rLuvas = rCabeca / 2;
@@ -40,50 +39,44 @@ Lutador::Lutador(string nome, Coordenada ponto, Cor *_cor,
     gPoss = 0;
 };
 
-void Lutador::DesenhaCorpo(Coordenada pos)
+void Lutador::DesenhaCorpo(D3 pos)
 {
-    Coordenada escala = {2 * rCabeca, rCabeca, rCabeca * 3};
-    Coordenada posRelativa = {0, 0, -0.5};
+    D3 escala = {2 * rCabeca, rCabeca, rCabeca * 3};
+    D3 posRelativa = {0, 0, -0.5};
 
     glPushMatrix();
     glTranslatef(pos.X, pos.Y, pos.Z);
-    DenhaCuboGLComCor(posRelativa, escala, gCorCorpo);
+    DenhaCuboGLComCor(posRelativa, escala, *gCorCorpo);
     glPopMatrix();
 }
 
-void Lutador::DesenhaBraco(Coordenada pos,
+void Lutador::DesenhaBraco(D3 pos,
                            GLfloat theta1, GLfloat theta2,
                            GLfloat tamBracos, GLfloat rLuvas)
 {
-    if (!ehMiniMapa)
-    {
-        tamBracos = tamBracos * 1.2;
-    }
 
-    Coordenada escala = {tamBracos / 6, tamBracos, tamBracos / 6};
-    Coordenada posRelativa = {0, 0.5, 0};
+    D3 escala = {tamBracos / 6, tamBracos, tamBracos / 6};
+    D3 posRelativa = {0, 0.5, 0};
 
     glPushMatrix();
     glTranslatef(pos.X, pos.Y, pos.Z);
 
-    if (!ehMiniMapa)
-    {
-        glRotatef(25, 1, 0, 0);
-    }
+
+    glRotatef(25, 1, 0, 0);
 
     glRotatef(theta1, 0, 0, 1);
 
-    DenhaCuboGLComCor(posRelativa, escala, gCorCorpo);
+    DenhaCuboGLComCor(posRelativa, escala, *gCorCorpo);
 
     glTranslatef(0, tamBracos, 0);
     glRotatef(theta2, 0, 0, 1);
 
-    DenhaCuboGLComCor(posRelativa, escala, gCorCorpo);
+    DenhaCuboGLComCor(posRelativa, escala, *gCorCorpo);
 
     glTranslatef(0, tamBracos, 0);
 
     Esfera *luva = new Esfera({0, 0, 0}, rLuvas, 10);
-    luva->DesenhaComCor(gCorCabeca);
+    luva->DesenhaComCor(*gCorCabeca);
 
     glPopMatrix();
 
@@ -91,16 +84,16 @@ void Lutador::DesenhaBraco(Coordenada pos,
     delete luva;
 }
 
-void Lutador::DesenhaNariz(Coordenada pos)
+void Lutador::DesenhaNariz(D3 pos)
 {
     Esfera *nariz = new Esfera(pos, rNariz, 10);
-    nariz->DesenhaComCor(gCorCabeca);
+    nariz->DesenhaComCor(*gCorCabeca);
 
     nariz->free_obj();
     delete nariz;
 }
 
-void Lutador::DesenhaCabeca(Coordenada pos)
+void Lutador::DesenhaCabeca(D3 pos)
 {
 
     //Circulo *circ = new Circulo(rCabeca, 100, x, y);
@@ -108,23 +101,22 @@ void Lutador::DesenhaCabeca(Coordenada pos)
     //free(circ);
 
     Esfera *cabeca = new Esfera(pos, rCabeca, 5);
-    cabeca->DesenhaComCor(gCorCabeca);
+    cabeca->DesenhaComCor(*gCorCabeca);
 
     cabeca->free_obj();
     delete cabeca;
 }
 
-void Lutador::DesenhaRaioColisao(Coordenada pos)
+void Lutador::DesenhaRaioColisao(D3 pos)
 {
     Circulo *circ = new Circulo(rColisao, 100, pos.X, pos.Y);
-    Cor *newCor = new Cor(1, 1, 1);
+    Cor newCor = Cor((RGB){1, 1, 1});
     circ->desenhaPontos(3, newCor);
 
     delete circ;
-    delete newCor;
 }
 
-void Lutador::DesenhaLutador(Coordenada pos, Cor *cor, GLfloat theta,
+void Lutador::DesenhaLutador(D3 pos, Cor *cor, GLfloat theta,
                              GLfloat theta1_R, GLfloat theta2_R,
                              GLfloat theta1_L, GLfloat theta2_L,
                              GLfloat rCab, GLfloat tBracos,
@@ -136,8 +128,8 @@ void Lutador::DesenhaLutador(Coordenada pos, Cor *cor, GLfloat theta,
     glRotatef(gTheta, 0, 0, 1);
     //DesenhaRaioColisao(0, 0);
     DesenhaNariz({0, rCabeca + (rNariz / 2), rCabeca * ALT_CAB_LUT});
-    DesenhaBraco({rCabeca, 0, rCabeca * (ALT_CAB_LUT - 2)}, (-90 + theta1_R), theta2_R, tamBracos, rLuvas); // DIREITA
-    DesenhaBraco({-rCabeca, 0, rCabeca * (ALT_CAB_LUT - 2)}, 90 - theta1_L, -theta2_L, tamBracos, rLuvas);  // ESQUERDA
+    DesenhaBraco({rCabeca, 0, rCabeca * (ALT_CAB_LUT - 2)}, (-85 + theta1_R), theta2_R, tamBracos, rLuvas); // DIREITA
+    DesenhaBraco({-rCabeca, 0, rCabeca * (ALT_CAB_LUT - 2)}, 85 - theta1_L, -theta2_L, tamBracos, rLuvas);  // ESQUERDA
     DesenhaCabeca({0, 0, rCabeca * ALT_CAB_LUT});
 
     DesenhaCorpo({0, 0, rCabeca * (ALT_CAB_LUT - 2)});

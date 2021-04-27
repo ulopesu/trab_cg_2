@@ -5,4 +5,4 @@ typedef struct
     GLfloat X;
     GLfloat Y;
     GLfloat Z;
-} Coordenada;
+} D3;

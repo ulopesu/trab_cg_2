@@ -53,7 +53,7 @@ class Lutador
     int TAM_ARENA_X;
     int TAM_ARENA_Y;
 
-    Coordenada gPos;
+    D3 gPos;
 
     Cor *gCorCabeca;
 
@@ -88,8 +88,6 @@ class Lutador
 
     bool gEhBoot;
 
-    bool ehMiniMapa;
-
 private:
     void getPosLuvaR(GLfloat &xL, GLfloat &yL);
     void getPosLuvaL(GLfloat &xL, GLfloat &yL);
@@ -101,18 +99,18 @@ private:
     void darSocoRL(GLfloat dSoco);
     void voltarSoco(GLfloat dSoco);
 
-    void DesenhaCorpo(Coordenada pos);
+    void DesenhaCorpo(D3 pos);
 
-    void DesenhaBraco(Coordenada pos, GLfloat theta1, GLfloat theta2,
+    void DesenhaBraco(D3 pos, GLfloat theta1, GLfloat theta2,
                       GLfloat tamBracos, GLfloat rLuvas);
 
-    void DesenhaNariz(Coordenada pos);
+    void DesenhaNariz(D3 pos);
 
-    void DesenhaCabeca(Coordenada pos);
+    void DesenhaCabeca(D3 pos);
 
-    void DesenhaRaioColisao(Coordenada pos);
+    void DesenhaRaioColisao(D3 pos);
 
-    void DesenhaLutador(Coordenada pos, Cor *cor,
+    void DesenhaLutador(D3 pos, Cor *cor,
                         GLfloat theta, GLfloat theta1_R, GLfloat theta2_R,
                         GLfloat theta1_L, GLfloat theta2_L, GLfloat rCab,
                         GLfloat tBracos, GLfloat rLvs, GLfloat rClsao);
@@ -120,7 +118,7 @@ private:
 public:
     Lutador(
         string nome,
-        Coordenada ponto, Cor *_cor,
+        D3 ponto, Cor *_cor,
         GLfloat _theta, GLfloat _tam,
         GLfloat TA_X, GLfloat TA_Y);
 
@@ -139,9 +137,8 @@ public:
         return gPoss;
     }
 
-    void Desenha(bool ehMM)
+    void Desenha()
     {   
-        ehMiniMapa = ehMM;
         DesenhaLutador(gPos, gCorCabeca, gTheta,
                        gTheta1_R, gTheta2_R,
                        gTheta1_L, gTheta2_L,
@@ -152,6 +149,11 @@ public:
     void Move(GLfloat dY, GLfloat dTheta);
     void controleSoco(GLfloat dSoco, LadoSoco ladoSoco);
 
+    GLfloat getTheta()
+    {
+        return gTheta;
+    }
+
     void getXYT(GLfloat &x, GLfloat &y, GLfloat &dir)
     {
         x = gPos.X;
@@ -159,7 +161,7 @@ public:
         dir = gTheta;
     }
 
-    void getXYZ(Coordenada &ponto)
+    void getXYZ(D3 &ponto)
     {
         ponto.X = gPos.X;
         ponto.Y = gPos.Y;
