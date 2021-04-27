@@ -5,13 +5,11 @@
 #include <GL/gl.h>
 #include "objetos.h"
 
-
 class Esfera: public Objeto
 {   
 private:
     GLfloat raio;
     GLfloat space;
-
 public:
     Esfera(Coordenada xyz, GLfloat r, GLfloat s);
 };

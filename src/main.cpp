@@ -124,7 +124,7 @@ void imprimePlacar()
     Coordenada pos = {0.3, 0.97, 0};
 
     imprimeTexto(pos, str, cor);
-    free(cor);
+    delete cor;
 }
 
 void imprimeReload()
@@ -136,7 +136,7 @@ void imprimeReload()
 
     imprimeTexto(pos, str, cor);
 
-    free(cor);
+    delete cor;
 }
 
 void imprimeVitoria(Lutador *lut)
@@ -149,7 +149,7 @@ void imprimeVitoria(Lutador *lut)
     imprimeTexto(pos, str, cor);
 
     FIM = true;
-    free(cor);
+    delete cor;
 }
 
 void atualizaLadoMouse()
@@ -264,8 +264,8 @@ void keyPress(unsigned char key, int x, int y)
     case 'R':
         if (FIM)
         {   
-            free(lutador1);
-            free(lutador2);
+            delete lutador1;
+            delete lutador2;
             Coordenada pos1 = {lut1x, lut1y, 0};
             Coordenada pos2 = {lut2x, lut2y, 0};
 
@@ -304,11 +304,9 @@ void keyPress(unsigned char key, int x, int y)
             break;
         }
     case 27:
-        free(arenaCor);
-        free(lutador1->getCor());
-        free(lutador2->getCor());
-        free(lutador1);
-        free(lutador2);
+        delete arenaCor;
+        delete lutador1;
+        delete lutador2;
         exit(0);
         break;
     default:

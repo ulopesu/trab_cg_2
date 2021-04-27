@@ -16,6 +16,7 @@ protected:
 public:
     Objeto(){ 
     };
+    void free_obj();
 
     void DesenhaComCor(Cor *cor);
     void DesenhaComTextura(GLuint texture);

@@ -4,6 +4,10 @@ GLfloat materialEmission[] = { 0.0, 0.0, 0.0, 1.0};
 static GLfloat mat_specular[] = {0.3, 0.3, 0.3, 1};
 static GLfloat mat_shininess[] = {100.0};
 
+void Objeto::free_obj(){
+    free(vtx);
+}
+
 void Objeto::DesenhaComCor(Cor *cor) { 
     glColor3f(1, 1, 1);
 
@@ -44,8 +48,6 @@ void Objeto::DesenhaComTextura(GLuint texture)
     }
     glEnd();
 }
-
-
 
 void DenhaCuboGLComCor(Coordenada posRelativa, Coordenada escala, Cor *cor){ 
     

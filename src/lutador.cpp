@@ -40,14 +40,14 @@ Lutador::Lutador(string nome, Coordenada ponto, Cor *_cor,
     gPoss = 0;
 };
 
-
-void Lutador:: DesenhaCorpo(Coordenada pos) {
-    Coordenada escala = {2*rCabeca, rCabeca, rCabeca*3};
+void Lutador::DesenhaCorpo(Coordenada pos)
+{
+    Coordenada escala = {2 * rCabeca, rCabeca, rCabeca * 3};
     Coordenada posRelativa = {0, 0, -0.5};
 
     glPushMatrix();
-        glTranslatef(pos.X, pos.Y, pos.Z);
-        DenhaCuboGLComCor(posRelativa, escala, gCorCorpo);
+    glTranslatef(pos.X, pos.Y, pos.Z);
+    DenhaCuboGLComCor(posRelativa, escala, gCorCorpo);
     glPopMatrix();
 }
 
@@ -57,7 +57,7 @@ void Lutador::DesenhaBraco(Coordenada pos,
 {
     if (!ehMiniMapa)
     {
-        tamBracos = tamBracos * 1.14;
+        tamBracos = tamBracos * 1.2;
     }
 
     Coordenada escala = {tamBracos / 6, tamBracos, tamBracos / 6};
@@ -68,7 +68,7 @@ void Lutador::DesenhaBraco(Coordenada pos,
 
     if (!ehMiniMapa)
     {
-        glRotatef(29.05, 1, 0, 0);
+        glRotatef(25, 1, 0, 0);
     }
 
     glRotatef(theta1, 0, 0, 1);
@@ -87,14 +87,17 @@ void Lutador::DesenhaBraco(Coordenada pos,
 
     glPopMatrix();
 
-    free(luva);
+    luva->free_obj();
+    delete luva;
 }
 
 void Lutador::DesenhaNariz(Coordenada pos)
 {
     Esfera *nariz = new Esfera(pos, rNariz, 10);
     nariz->DesenhaComCor(gCorCabeca);
-    free(nariz);
+
+    nariz->free_obj();
+    delete nariz;
 }
 
 void Lutador::DesenhaCabeca(Coordenada pos)
@@ -106,7 +109,9 @@ void Lutador::DesenhaCabeca(Coordenada pos)
 
     Esfera *cabeca = new Esfera(pos, rCabeca, 5);
     cabeca->DesenhaComCor(gCorCabeca);
-    free(cabeca);
+
+    cabeca->free_obj();
+    delete cabeca;
 }
 
 void Lutador::DesenhaRaioColisao(Coordenada pos)
@@ -114,8 +119,9 @@ void Lutador::DesenhaRaioColisao(Coordenada pos)
     Circulo *circ = new Circulo(rColisao, 100, pos.X, pos.Y);
     Cor *newCor = new Cor(1, 1, 1);
     circ->desenhaPontos(3, newCor);
-    free(newCor);
-    free(circ);
+
+    delete circ;
+    delete newCor;
 }
 
 void Lutador::DesenhaLutador(Coordenada pos, Cor *cor, GLfloat theta,
