@@ -44,7 +44,7 @@ enum LadoSoco
 
 #define VEL_BOOT 0.2
 
-#define ALT_CAB_LUT 6
+#define ALT_CAB_LUT 3
 
 class Lutador
 {

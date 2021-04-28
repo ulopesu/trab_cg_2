@@ -22,6 +22,6 @@ public:
     void DesenhaComTextura(GLuint texture, int glTipo);
 };
 
-void DenhaCuboGLComCor(D3 posRelativa, D3 escala, Cor cor);
+void DesenhaCuboGL(D3 posCubo, D3 posRelativa, D3 escala, Cor corCubo);
 
 #endif /* OBJETO_H */

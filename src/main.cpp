@@ -4,12 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
-#include <unistd.h>
-#include <iostream>
-#include <string>
 
-#include "plano.h"
-#include "lutador.h"
+#include "desenhos.h"
 #include "matrix.h"
 #include "tinyxml/tinyxml.h"
 
@@ -17,10 +13,6 @@
 
 #define INC_KEY 2
 #define INC_KEYIDLE 1
-
-// DIMENSOES
-// Obs: todos os valores abaixo seram multiplicados por lut1rCabeca
-#define ALT_GRADE ALT_CAB_LUT * 3
 
 #define TOTAL_PONTOS_WIN 10
 
@@ -30,13 +22,17 @@
 GLfloat winWidth, winHeight;
 
 // FIM DO JOGO
-int FIM = false;
+bool FIM = false;
 
 // SVG CONFIG
 GLfloat arenaX, arenaY, arenaWidth, arenaHeight;
 Cor *arenaCor, *lut1cor, *lut2cor;
 GLfloat lut1x, lut1y, lut1rCabeca;
 GLfloat lut2x, lut2y, lut2rCabeca;
+
+
+// TEXTURAS
+GLuint texturas[10];
 
 // MOUSE CONFIG
 bool onDrag = false;
@@ -71,10 +67,9 @@ void *font = GLUT_BITMAP_9_BY_15;
 double camDist = 50;
 double camXYAngle = 0;
 double camXZAngle = 0;
-int tipoCam = 0;
+int tipoCam = 1;
 int camAngle = 60;
 
-static char str[1000];
 
 long long timeMS(void)
 {
@@ -82,70 +77,6 @@ long long timeMS(void)
 
     gettimeofday(&tv, NULL);
     return (((long long)tv.tv_sec) * 1000) + (tv.tv_usec / 1000);
-}
-
-void RasterChars(D3 pos, const char *text, Cor cor)
-{
-    glPushAttrib(GL_ENABLE_BIT);
-    glDisable(GL_LIGHTING);
-    glDisable(GL_TEXTURE_2D);
-
-    glColor3f(cor.getR(), cor.getG(), cor.getB());
-    glRasterPos3f(pos.X, pos.Y, pos.Z);
-    const char *tmpStr;
-    tmpStr = text;
-    while (*tmpStr)
-    {
-        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, *tmpStr);
-        tmpStr++;
-    }
-    glPopAttrib();
-}
-
-void imprimeTexto(D3 pos, const char *text, Cor cor)
-{
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(0, 1, 0, 1, -1, 1);
-    RasterChars(pos, text, cor);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-}
-
-void imprimePlacar()
-{
-    int ptsLut1 = lutador1->getPontos();
-    int ptsLut2 = lutador2->getPontos();
-    sprintf(str, "| Player 1:  %d    |    Player 2:  %d |", ptsLut1, ptsLut2);
-
-    Cor cor = Cor((RGB){1, 1, 1});
-    D3 pos = {0.3, 0.97, 0};
-
-    imprimeTexto(pos, str, cor);
-}
-
-void imprimeReload()
-{
-    sprintf(str, "Press (R) to RELOAD!");
-
-    Cor cor = Cor((RGB){1, 1, 1});
-    D3 pos = {0.7, 0.05, 0};
-
-    imprimeTexto(pos, str, cor);
-
-}
-
-void imprimeVitoria(Lutador *lut)
-{
-    sprintf(str, "| %s !!! WIN !!! |", lut->getNome().c_str());
-
-    Cor cor = Cor((RGB){1, 1, 1});
-    D3 pos = {0.38, 0.93, 0};
-
-    imprimeTexto(pos, str, cor);
-
-    FIM = true;
 }
 
 void atualizaLadoMouse()
@@ -204,10 +135,17 @@ void mouse(int button, int state, int _x, int _y)
 
 void changeCamera(int angle, int w, int h)
 {
+
     glMatrixMode(GL_PROJECTION);
-    gluPerspective(angle, (GLfloat)w / (GLfloat)h, 1, 150.0);
-    glMatrixMode(GL_MODELVIEW);
+
+    //if(miniMap){
+    //glOrtho(-(arenaWidth / 2), (arenaWidth / 2),   //     X
+    //        -(arenaHeight / 2), (arenaHeight / 2), //     Y
+    //        -10000, 10000);                        //     Z
+    //}
     glLoadIdentity();
+    gluPerspective(angle, (GLfloat)w / (GLfloat)h, 1, 1000.0);
+    glMatrixMode(GL_MODELVIEW);
 }
 
 void keyPress(unsigned char key, int x, int y)
@@ -264,8 +202,8 @@ void keyPress(unsigned char key, int x, int y)
         {
             delete lutador1;
             delete lutador2;
-            D3 pos1 = {lut1x, lut1y, 0};
-            D3 pos2 = {lut2x, lut2y, 0};
+            D3 pos1 = {lut1x, lut1y, lut1rCabeca * ALT_CAB_LUT};
+            D3 pos2 = {lut2x, lut2y, lut2rCabeca * ALT_CAB_LUT};
 
             lutador1 = new Lutador(nome1, pos1, lut1cor, 0, lut1rCabeca, arenaWidth, arenaHeight);
             lutador2 = new Lutador(nome2, pos2, lut2cor, 90, lut2rCabeca, arenaWidth, arenaHeight);
@@ -308,7 +246,8 @@ void keyPress(unsigned char key, int x, int y)
         exit(0);
         break;
     default:
-        printf("\nKEY: %c -> INT: %d\n", key, key);
+        //printf("\nKEY: %c -> INT: %d\n", key, key);
+        break;
     }
     glutPostRedisplay();
 }
@@ -319,9 +258,39 @@ void keyup(unsigned char key, int x, int y)
     glutPostRedisplay();
 }
 
-void desenhaArena(){
-    Plano chao = Plano({arenaWidth/2, arenaHeight/2, 0}, Z);
-    chao.DesenhaComCor(Cor((RGB){0.1,0.1,0.8}));
+void configLuz(){
+    GLfloat dArena = 5;
+    GLfloat dLux = 1;
+    GLfloat luzDIF[] = {dLux, dLux, dLux, 1};
+    GLfloat luzSPE[] = {dLux, dLux, dLux, 1};
+    // LUZ 1 - CONFIG
+    GLfloat luz0POS[] = {0, 0, lut1rCabeca * (ALT_GRADE - dArena), 1.0};
+    glLightfv(GL_LIGHT0, GL_POSITION, luz0POS);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, luzDIF);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, luzSPE);
+
+    GLfloat luz1POS[] = {-(arenaWidth / 2) + dArena, -(arenaHeight / 2) + dArena, lut1rCabeca * (ALT_GRADE - dArena), 1.0};
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, luzDIF);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, luzSPE);
+    glLightfv(GL_LIGHT1, GL_POSITION, luz1POS);
+
+    // LUZ 2 - CONFIG
+    GLfloat luz2POS[] = {-(arenaWidth / 2) + dArena, (arenaHeight / 2) - dArena, lut1rCabeca * (ALT_GRADE - dArena), 1.0};
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, luzDIF);
+    glLightfv(GL_LIGHT2, GL_SPECULAR, luzSPE);
+    glLightfv(GL_LIGHT2, GL_POSITION, luz2POS);
+
+    // LUZ 3 - CONFIG
+    GLfloat luz3POS[] = {(arenaWidth / 2) - dArena, -(arenaHeight / 2) + dArena, lut1rCabeca * (ALT_GRADE - dArena), 1.0};
+    glLightfv(GL_LIGHT3, GL_DIFFUSE, luzDIF);
+    glLightfv(GL_LIGHT3, GL_SPECULAR, luzSPE);
+    glLightfv(GL_LIGHT3, GL_POSITION, luz3POS);
+
+    // LUZ 4 - CONFIG
+    GLfloat luz4POS[] = {(arenaWidth / 2) - dArena, (arenaHeight / 2) - dArena, lut1rCabeca * (ALT_GRADE - dArena), 1.0};
+    glLightfv(GL_LIGHT4, GL_DIFFUSE, luzDIF);
+    glLightfv(GL_LIGHT4, GL_SPECULAR, luzSPE);
+    glLightfv(GL_LIGHT4, GL_POSITION, luz4POS);
 }
 
 void display(void)
@@ -330,15 +299,15 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    imprimePlacar();
+    imprimePlacar(lutador1, lutador2);
 
     if (lutador1->getPontos() >= TOTAL_PONTOS_WIN)
     {
-        imprimeVitoria(lutador1);
+        imprimeVitoria(lutador1, FIM);
     }
     else if (lutador2->getPontos() >= TOTAL_PONTOS_WIN)
     {
-        imprimeVitoria(lutador2);
+        imprimeVitoria(lutador2, FIM);
     }
 
     if (FIM)
@@ -350,13 +319,16 @@ void display(void)
     {
         D3 posJog1, olharPara;
         lutador1->getXYZ(posJog1);
+        GLfloat dX, dY, theta = lutador1->getTheta();
 
-        GLfloat theta = lutador1->getTheta();
-        olharPara.X = sin(theta * toRad);
-        olharPara.Y = cos(theta * toRad);
-        olharPara.Z = posJog1.Z;
+        dX = -sin(theta * toRad);
+        dY = cos(theta * toRad);
 
-        gluLookAt(posJog1.X, posJog1.Y, 0, 0, 0, 0, 0, 0, 1);
+        olharPara.X = dX * arenaWidth;
+        olharPara.Y = dY * arenaHeight;
+        olharPara.Z = posJog1.Z + (lut1rCabeca/4);
+
+        gluLookAt(posJog1.X+dX*(lut1rCabeca/2), posJog1.Y+dY*(lut1rCabeca/2), olharPara.Z, olharPara.X, olharPara.Y, olharPara.Z/2, 0, 0, 1);
     }
     else if (tipoCam == 2)
     {
@@ -370,46 +342,16 @@ void display(void)
     }
     else if (tipoCam == 3)
     {
+        gluLookAt(0, 0, lut1rCabeca * (ALT_GRADE), 0, 0, 0, 0, 1, 0);
     }
-    else
+    else if (tipoCam == 4)
     {
-        glTranslatef(0, 0, -lut1rCabeca * ALT_GRADE);
-        glRotatef(camXZAngle, 1, 0, 0);
-        glRotatef(camXYAngle, 0, 1, 0);
     }
 
-    GLfloat luzDIF[] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat luzSPE[] = {1.0, 1.0, 1.0, 1.0};
+    configLuz();
 
-    // LUZ 0 - CONFIG
-    GLfloat luz0POS[] = {0, 0, lut1rCabeca * 7, 1.0};
-    glLightfv(GL_LIGHT0, GL_POSITION, luz0POS);
-
-    // LUZ 1 - CONFIG
-    GLfloat luz1POS[] = {-arenaWidth, -arenaHeight, lut1rCabeca * (ALT_GRADE + 2), 1.0};
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, luzDIF);
-    glLightfv(GL_LIGHT1, GL_SPECULAR, luzSPE);
-    glLightfv(GL_LIGHT1, GL_POSITION, luz1POS);
-
-    // LUZ 2 - CONFIG
-    GLfloat luz2POS[] = {-arenaWidth, arenaHeight, lut1rCabeca * (ALT_GRADE + 2), 1.0};
-    glLightfv(GL_LIGHT2, GL_DIFFUSE, luzDIF);
-    glLightfv(GL_LIGHT2, GL_SPECULAR, luzSPE);
-    glLightfv(GL_LIGHT2, GL_POSITION, luz2POS);
-
-    // LUZ 3 - CONFIG
-    GLfloat luz3POS[] = {arenaWidth, -arenaHeight, lut1rCabeca * (ALT_GRADE + 2), 1.0};
-    glLightfv(GL_LIGHT3, GL_DIFFUSE, luzDIF);
-    glLightfv(GL_LIGHT3, GL_SPECULAR, luzSPE);
-    glLightfv(GL_LIGHT3, GL_POSITION, luz3POS);
-
-    // LUZ 4 - CONFIG
-    GLfloat luz4POS[] = {arenaWidth, arenaHeight, lut1rCabeca * (ALT_GRADE + 2), 1.0};
-    glLightfv(GL_LIGHT4, GL_DIFFUSE, luzDIF);
-    glLightfv(GL_LIGHT4, GL_SPECULAR, luzSPE);
-    glLightfv(GL_LIGHT4, GL_POSITION, luz4POS);
-
-    desenhaArena();
+    desenhaArena(arenaWidth, arenaHeight, lut1rCabeca, texturas);
+    
     lutador1->Desenha();
     lutador2->Desenha();
 
@@ -425,9 +367,7 @@ void ResetKeyStatus()
 
 void reshape(int w, int h)
 {
-
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
-
     changeCamera(camAngle, w, h);
 }
 
@@ -437,18 +377,19 @@ void init(void)
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_LIGHTING);
     glShadeModel(GL_SMOOTH);
-
     glDepthFunc(GL_LEQUAL);
 
     ResetKeyStatus();
-    glClearColor(arenaCor->getR(), arenaCor->getG(), arenaCor->getB(), 1.0f);
 
-    glMatrixMode(GL_PROJECTION);
-    glOrtho(-(arenaWidth / 2), (arenaWidth / 2),   //     X
-            -(arenaHeight / 2), (arenaHeight / 2), //     Y
-            -10000, 10000);                        //     Z
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    texturas[Chao] = LoadTextureRAW( "../texturas/ground1.bmp" );
+    texturas[Ceu] = LoadTextureRAW( "../texturas/ceu.bmp" );
+    texturas[Paredes] = LoadTextureRAW( "../texturas/paredes.bmp" );
+
+    D3 pos1 = {lut1x, lut1y, lut1rCabeca * ALT_CAB_LUT};
+    D3 pos2 = {lut2x, lut2y, lut2rCabeca * ALT_CAB_LUT};
+
+    lutador1 = new Lutador(nome1, pos1, lut1cor, 0, lut1rCabeca, arenaWidth, arenaHeight);
+    lutador2 = new Lutador(nome2, pos2, lut2cor, 90, lut2rCabeca, arenaWidth, arenaHeight);
 
     lutador1->setOponente(lutador2);
     lutador2->setOponente(lutador1);
@@ -619,12 +560,6 @@ int main(int argc, char *argv[])
     //printf("\n arenaWidth: %f      arenaHeight: %f\n", arenaWidth, arenaHeight);
     //printf("\n lut1x: %f      lut1y: %f\n", lut1x, lut1y);
 
-    D3 pos1 = {lut1x, lut1y, lut1rCabeca * ALT_CAB_LUT};
-    D3 pos2 = {lut2x, lut2y, lut2rCabeca * ALT_CAB_LUT};
-
-    lutador1 = new Lutador(nome1, pos1, lut1cor, 0, lut1rCabeca, arenaWidth, arenaHeight);
-    lutador2 = new Lutador(nome2, pos2, lut2cor, 90, lut2rCabeca, arenaWidth, arenaHeight);
-
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
 
@@ -633,17 +568,17 @@ int main(int argc, char *argv[])
 
     glutInitWindowSize(winWidth, winHeight);
     glutInitWindowPosition(2000, 300);
-    glutCreateWindow("Tranformations 2D");
+    glutCreateWindow("BOX 3D");
+
+    init();
 
     glutDisplayFunc(display);
     glutKeyboardFunc(keyPress);
     glutIdleFunc(idle);
-    //glutReshapeFunc (reshape);
+    glutReshapeFunc(reshape);
     glutKeyboardUpFunc(keyup);
     glutMotionFunc(drag);
     glutMouseFunc(mouse);
-
-    init();
     glutMainLoop();
 
     return 0;

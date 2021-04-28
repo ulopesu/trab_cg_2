@@ -44,10 +44,7 @@ void Lutador::DesenhaCorpo(D3 pos)
     D3 escala = {2 * rCabeca, rCabeca, rCabeca * 3};
     D3 posRelativa = {0, 0, -0.5};
 
-    glPushMatrix();
-    glTranslatef(pos.X, pos.Y, pos.Z);
-    DenhaCuboGLComCor(posRelativa, escala, *gCorCorpo);
-    glPopMatrix();
+    DesenhaCuboGL(pos, posRelativa, escala, *gCorCorpo);
 }
 
 void Lutador::DesenhaBraco(D3 pos,
@@ -61,36 +58,33 @@ void Lutador::DesenhaBraco(D3 pos,
     glPushMatrix();
     glTranslatef(pos.X, pos.Y, pos.Z);
 
-
     glRotatef(25, 1, 0, 0);
 
     glRotatef(theta1, 0, 0, 1);
 
-    DenhaCuboGLComCor(posRelativa, escala, *gCorCorpo);
+    DesenhaCuboGL({0, 0, 0}, posRelativa, escala, *gCorCorpo);
 
     glTranslatef(0, tamBracos, 0);
     glRotatef(theta2, 0, 0, 1);
 
-    DenhaCuboGLComCor(posRelativa, escala, *gCorCorpo);
+    DesenhaCuboGL({0, 0, 0}, posRelativa, escala, *gCorCorpo);
 
     glTranslatef(0, tamBracos, 0);
 
-    Esfera *luva = new Esfera({0, 0, 0}, rLuvas, 10);
-    luva->DesenhaComCor(*gCorCabeca);
+    Esfera luva = Esfera({0, 0, 0}, rLuvas, 10);
+    luva.DesenhaComCor(*gCorCabeca);
 
     glPopMatrix();
 
-    luva->free_obj();
-    delete luva;
+    luva.free_obj();
 }
 
 void Lutador::DesenhaNariz(D3 pos)
 {
-    Esfera *nariz = new Esfera(pos, rNariz, 10);
-    nariz->DesenhaComCor(*gCorCabeca);
+    Esfera nariz = Esfera(pos, rNariz, 10);
+    nariz.DesenhaComCor(*gCorCabeca);
 
-    nariz->free_obj();
-    delete nariz;
+    nariz.free_obj();
 }
 
 void Lutador::DesenhaCabeca(D3 pos)
@@ -100,20 +94,17 @@ void Lutador::DesenhaCabeca(D3 pos)
     //circ->desenhaComBorda(cor);
     //free(circ);
 
-    Esfera *cabeca = new Esfera(pos, rCabeca, 5);
-    cabeca->DesenhaComCor(*gCorCabeca);
+    Esfera cabeca = Esfera(pos, rCabeca, 5);
+    cabeca.DesenhaComCor(*gCorCabeca);
 
-    cabeca->free_obj();
-    delete cabeca;
+    cabeca.free_obj();
 }
 
 void Lutador::DesenhaRaioColisao(D3 pos)
 {
-    Circulo *circ = new Circulo(rColisao, 100, pos.X, pos.Y);
+    Circulo circ = Circulo(rColisao, 100, pos.X, pos.Y);
     Cor newCor = Cor((RGB){1, 1, 1});
-    circ->desenhaPontos(3, newCor);
-
-    delete circ;
+    circ.desenhaPontos(3, newCor);
 }
 
 void Lutador::DesenhaLutador(D3 pos, Cor *cor, GLfloat theta,
@@ -124,15 +115,15 @@ void Lutador::DesenhaLutador(D3 pos, Cor *cor, GLfloat theta,
 {
 
     glPushMatrix();
-    glTranslatef(pos.X, pos.Y, 0);
+    glTranslatef(pos.X, pos.Y, pos.Z);
     glRotatef(gTheta, 0, 0, 1);
     //DesenhaRaioColisao(0, 0);
-    DesenhaNariz({0, rCabeca + (rNariz / 2), rCabeca * ALT_CAB_LUT});
-    DesenhaBraco({rCabeca, 0, rCabeca * (ALT_CAB_LUT - 2)}, (-85 + theta1_R), theta2_R, tamBracos, rLuvas); // DIREITA
-    DesenhaBraco({-rCabeca, 0, rCabeca * (ALT_CAB_LUT - 2)}, 85 - theta1_L, -theta2_L, tamBracos, rLuvas);  // ESQUERDA
-    DesenhaCabeca({0, 0, rCabeca * ALT_CAB_LUT});
+    DesenhaNariz({0, rCabeca + (rNariz / 2)});
+    DesenhaBraco({rCabeca, 0, rCabeca * (-2)}, (-85 + theta1_R), theta2_R, tamBracos, rLuvas); // DIREITA
+    DesenhaBraco({-rCabeca, 0, rCabeca * (-2)}, 85 - theta1_L, -theta2_L, tamBracos, rLuvas);  // ESQUERDA
+    DesenhaCabeca({0, 0, 0});
 
-    DesenhaCorpo({0, 0, rCabeca * (ALT_CAB_LUT - 2)});
+    DesenhaCorpo({0, 0, rCabeca * (-2)});
 
     glPopMatrix();
     gdiffTheta1_R = gTheta1_R_Ant - gTheta1_R;
