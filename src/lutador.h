@@ -10,10 +10,7 @@
 using namespace std;
 
 #include "cor.h"
-#include "matrix.h"
-
 #include "esfera.h"
-
 #include "circulo.h"
 #include "retangulo.h"
 
@@ -89,8 +86,6 @@ class Lutador
     bool gEhBoot;
 
 private:
-    void getPosLuvaR(GLfloat &xL, GLfloat &yL);
-    void getPosLuvaL(GLfloat &xL, GLfloat &yL);
     bool colisaoLut(GLfloat dXY);
     bool colisaoTelaX(GLfloat dXY);
     bool colisaoTelaY(GLfloat dXY);
@@ -138,7 +133,7 @@ public:
     }
 
     void Desenha()
-    {   
+    {
         DesenhaLutador(gPos, gCorCabeca, gTheta,
                        gTheta1_R, gTheta2_R,
                        gTheta1_L, gTheta2_L,
@@ -148,24 +143,13 @@ public:
     void darSoco();
     void Move(GLfloat dY, GLfloat dTheta);
     void controleSoco(GLfloat dSoco, LadoSoco ladoSoco);
+    void getPosLuvaR(D3 &posLuvaR);
+    void getPosLuvaL(D3 &posLuvaL);
 
-    GLfloat getTheta()
+    void getXYZT(D3 &posLut, GLfloat &dir)
     {
-        return gTheta;
-    }
-
-    void getXYT(GLfloat &x, GLfloat &y, GLfloat &dir)
-    {
-        x = gPos.X;
-        y = gPos.Y;
+        posLut = gPos;
         dir = gTheta;
-    }
-
-    void getXYZ(D3 &ponto)
-    {
-        ponto.X = gPos.X;
-        ponto.Y = gPos.Y;
-        ponto.Z = gPos.Z;
     }
 
     bool getSocoStatus()
@@ -175,7 +159,7 @@ public:
 
     bool acerto(bool &acerto_ant);
 
-    void getPosNariz(GLfloat &xL, GLfloat &yL);
+    void getPosNariz(D3 &posNariz);
 
     void moveBoot();
 
@@ -199,11 +183,16 @@ public:
         gEhBoot = ehBoot;
     }
 
+    void getTamBracos(GLfloat &tamB){
+        tamB = tamBracos;
+    }
+
     void dirOponente()
-    {
-        GLfloat xOp, yOp, dirOp;
-        gOponente->getXYT(xOp, yOp, dirOp);
-        gTheta = atan2(gPos.Y - yOp, gPos.X - xOp) * fromRad + 90;
+    {   
+        D3 posOp;
+        GLfloat dirOp;
+        gOponente->getXYZT(posOp, dirOp);
+        gTheta = atan2(gPos.Y - posOp.Y, gPos.X - posOp.X) * fromRad + 90;
     }
 };
 

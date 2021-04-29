@@ -1,5 +1,5 @@
 #include <GL/gl.h>
-#include "d3.h"
+#include "matrix.h"
 
 typedef struct
 {

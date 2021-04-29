@@ -6,7 +6,6 @@
 #include <sys/time.h>
 
 #include "desenhos.h"
-#include "matrix.h"
 #include "tinyxml/tinyxml.h"
 
 #define N_MTX 4
@@ -109,8 +108,6 @@ void drag(int _x, int _y)
     {
         camXYAngle = mouseX - mouseClick_X;
 
-
-
         if (((mouseY - mouseClick_Y) >= -30) && ((mouseY - mouseClick_Y) <= 30))
         {
             camUPAngle = mouseY - mouseClick_Y;
@@ -161,12 +158,6 @@ void keyPress(unsigned char key, int x, int y)
     static bool textureEnebled = true;
     static bool lightingEnebled = true;
     static bool smoothEnebled = true;
-
-    //camXYAngle += x - lastX;
-    //camXZAngle += y - lastY;
-    //
-    //camXYAngle = (int)camXYAngle % 360;
-    //camXZAngle = (int)camXZAngle % 360;
 
     switch (key)
     {
@@ -334,7 +325,8 @@ void configLuz()
 
     // CONFIG HOLOFOTES
     D3 posLut1, posLut2;
-    lutador1->getXYZ(posLut1);
+    GLfloat theta;
+    lutador1->getXYZT(posLut1, theta);
 
     GLfloat luz5DIR[] = {luz0POS[0] - posLut1.X, luz0POS[1] - posLut1.Y, luz0POS[2] - posLut1.Z, 1};
     GLfloat normal = sqrt(
@@ -354,7 +346,7 @@ void configLuz()
     glLightf(GL_LIGHT5, GL_SPOT_EXPONENT, 10.0);
     glLightfv(GL_LIGHT5, GL_SPOT_DIRECTION, luz5DIR);
 
-    lutador2->getXYZ(posLut2);
+    lutador2->getXYZT(posLut2, theta);
 
     GLfloat luz6DIR[] = {luz0POS[0] - posLut1.X, luz0POS[1] - posLut1.Y, luz0POS[2] - posLut1.Z, 1};
     normal = sqrt(
@@ -397,8 +389,10 @@ void display(void)
     if (tipoCam == 1)
     {
         D3 posJog1, olharPara;
-        lutador1->getXYZ(posJog1);
-        GLfloat dX, dY, theta = lutador1->getTheta();
+
+        GLfloat dX, dY, theta;
+
+        lutador1->getXYZT(posJog1, theta);
 
         dX = -sin(theta * toRad);
         dY = cos(theta * toRad);
@@ -418,31 +412,45 @@ void display(void)
     }
     else if (tipoCam == 2)
     {
-        //imprimeTexto({0.1, 0.1, 0}, "Static Camera at a Distance", new Cor(0,1,0));
+        D3 posLuvaR;
         D3 posJog1;
-        D3 posJog2;
-        lutador1->getXYZ(posJog1);
-        lutador2->getXYZ(posJog2);
-        gluLookAt(posJog1.X, posJog1.Y, posJog1.Z, 0, -arenaHeight / 2, -lut1rCabeca * ALT_CAB_LUT, 0, 0, 1);
-        //GLfloat theta = atan2(pos.Y, pos.X) * fromRad + 90;
+        GLfloat dX, dY, dZ, theta, tamB;
+
+        lutador1->getPosLuvaR(posLuvaR);
+        lutador1->getXYZT(posJog1, theta);
+        lutador1->getTamBracos(tamB);
+
+        dX = -sin((theta)*toRad);
+        dY = cos((theta)*toRad);
+
+        gluLookAt(
+            posLuvaR.X - (dX * tamB),
+            posLuvaR.Y - (dY * tamB),
+            posLuvaR.Z,
+            posLuvaR.X + (dX * tamB*500),
+            posLuvaR.Y + (dY * tamB*500),
+            posLuvaR.Z + lut1rCabeca / 2,
+            0, 0, 1);
     }
     else if (tipoCam == 3)
     {
         D3 posJog1;
-        lutador1->getXYZ(posJog1);
-        GLfloat dX, dY, dZ, meiolutZ, theta = lutador1->getTheta();
+
+        GLfloat dX, dY, dZ, meiolutZ, theta;
+
+        lutador1->getXYZT(posJog1, theta);
 
         dX = -sin((theta + camXYAngle) * toRad);
         dY = cos((theta + camXYAngle) * toRad);
 
         dZ = sin(camUPAngle * toRad);
 
-        meiolutZ = ((lut1rCabeca+1) * ALT_CAB_LUT / 2);
+        meiolutZ = ((lut1rCabeca + 1) * ALT_CAB_LUT / 2);
 
         gluLookAt(
             posJog1.X - dX * camDist,
             posJog1.Y - dY * camDist,
-            100+(meiolutZ + dZ * camDist),
+            100 + (meiolutZ + dZ * camDist),
             posJog1.X,
             posJog1.Y,
             meiolutZ,

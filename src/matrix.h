@@ -1,6 +1,7 @@
 #include <GL/gl.h>
 #include <math.h>
 #include <stdio.h>
+#include "d3.h"
 
 #define toRad (M_PI / 180)
 
@@ -15,5 +16,5 @@ GLfloat** rotateXmatrix(GLfloat **m1, GLfloat a,  int N);
 GLfloat** rotateMatrix(GLfloat **m1, GLfloat a, GLfloat b, GLfloat c, int N);
 GLfloat** translateMatrix(GLfloat **m1, GLfloat dx, GLfloat dy, GLfloat dz, int N);
 GLfloat** scaleMatrix(GLfloat **m1, GLfloat sx, GLfloat sy, GLfloat sz, int N);
-GLfloat dist(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
+GLfloat dist(D3 p1, D3 p2);
 

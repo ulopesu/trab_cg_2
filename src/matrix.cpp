@@ -179,7 +179,7 @@ GLfloat **scaleMatrix(GLfloat **m1, GLfloat sx, GLfloat sy, GLfloat sz, int N)
     return multiMatrix(mtxS, m1, N);
 }
 
-GLfloat dist(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+GLfloat dist(D3 p1, D3 p2)
 {
-    return sqrt((pow(x1 - x2, 2) + pow(y1 - y2, 2)));
+    return sqrt(pow(p1.X - p2.X, 2) + pow(p1.Y - p2.Y, 2) + pow(p1.Z - p2.Z, 2));
 }

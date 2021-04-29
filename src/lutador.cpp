@@ -123,8 +123,7 @@ void Lutador::DesenhaLutador(D3 pos, Cor *cor, GLfloat theta,
     DesenhaBraco({-rCabeca, 0, rCabeca * (-2)}, 85 - theta1_L, -theta2_L, tamBracos, rLuvas);  // ESQUERDA
     DesenhaCabeca({0, 0, 0});
 
-    DesenhaCorpo({0, 0, rCabeca * (-2)});
-
+    DesenhaCorpo({0, 0, rCabeca * ((GLfloat)-1.5)});
     glPopMatrix();
     gdiffTheta1_R = gTheta1_R_Ant - gTheta1_R;
     gdiffTheta1_L = gTheta1_L_Ant - gTheta1_L;
@@ -165,11 +164,12 @@ bool Lutador::colisaoLut(GLfloat dXY)
 {
     GLfloat dX = -dXY * sin(gTheta * toRad);
     GLfloat dY = dXY * cos(gTheta * toRad);
-    GLfloat xOp, yOp, dirOp;
-    gOponente->getXYT(xOp, yOp, dirOp);
+    D3 posOp;
+    GLfloat dirOp;
+    gOponente->getXYZT(posOp, dirOp);
 
-    dX = gPos.X + dX - xOp;
-    dY = gPos.Y + dY - yOp;
+    dX = gPos.X + dX - posOp.X;
+    dY = gPos.Y + dY - posOp.Y;
 
     GLfloat dist = sqrt(pow(dX, 2) + pow(dY, 2));
 
@@ -301,7 +301,7 @@ void Lutador::darSoco()
     }
 }
 
-void Lutador::getPosLuvaR(GLfloat &xL, GLfloat &yL)
+void Lutador::getPosLuvaR(D3 &posLuvaR)
 {
     GLfloat **mtx_lut = identityMatrix(N_MTX);
     GLfloat **aux;
@@ -320,14 +320,18 @@ void Lutador::getPosLuvaR(GLfloat &xL, GLfloat &yL)
     mtx_lut = rotateMatrix(mtx_lut, 0, 0, gTheta, N_MTX);
     mtx_lut = translateMatrix(mtx_lut, gPos.X, gPos.Y, 0, N_MTX);
 
-    xL = mtx_lut[0][0];
-    yL = mtx_lut[1][0];
+    posLuvaR.X = mtx_lut[0][0];
+    posLuvaR.Y = mtx_lut[1][0];
+    
+    GLfloat dZ = (gTheta1_R + 50) / 135 * 2 * tamBracos;
+    dZ = sin(30 * toRad) * dZ;
+    posLuvaR.Z = gPos.Z - (2 * rCabeca) + dZ;
 
     //Circulo *circ = new Circulo(rLuvas, 100, xL, yL);
     //circ->desenhaCompleto(new Cor(0,1,1));
 }
 
-void Lutador::getPosLuvaL(GLfloat &xL, GLfloat &yL)
+void Lutador::getPosLuvaL(D3 &posLuvaL)
 {
     GLfloat **mtx_lut = identityMatrix(N_MTX);
     GLfloat **aux;
@@ -346,19 +350,23 @@ void Lutador::getPosLuvaL(GLfloat &xL, GLfloat &yL)
     mtx_lut = rotateMatrix(mtx_lut, 0, 0, gTheta, N_MTX);
     mtx_lut = translateMatrix(mtx_lut, gPos.X, gPos.Y, 0, N_MTX);
 
-    xL = mtx_lut[0][0];
-    yL = mtx_lut[1][0];
+    posLuvaL.X = mtx_lut[0][0];
+    posLuvaL.Y = mtx_lut[1][0];
 
+    GLfloat dZ = (gTheta1_L + 50) / 135 * 2 * tamBracos;
+    dZ = sin(30 * toRad) * dZ;
+    posLuvaL.Z = gPos.Z - (2 * rCabeca) + dZ;
     //Circulo *circ = new Circulo(rLuvas, 100, xL, yL);
     //circ->desenhaCompleto(new Cor(0,1,1));
 }
 
-void Lutador::getPosNariz(GLfloat &xL, GLfloat &yL)
+void Lutador::getPosNariz(D3 &posNariz)
 {
     GLfloat **mtx = translateMatrix(identityMatrix(N_MTX), 0, rCabeca, 0, N_MTX);
     mtx = rotateMatrix(mtx, 0, 0, -gTheta, N_MTX);
-    xL = mtx[0][0] + gPos.X;
-    yL = mtx[0][1] + gPos.Y;
+    posNariz.X = mtx[0][0] + gPos.X;
+    posNariz.Y = mtx[0][1] + gPos.Y;
+    posNariz.Z = gPos.Z;
 
     //Circulo *circ = new Circulo(rLuvas, 100, xL, yL);
     //circ->desenhaCompleto(new Cor(0,1,1));
@@ -366,16 +374,18 @@ void Lutador::getPosNariz(GLfloat &xL, GLfloat &yL)
 
 bool Lutador::acerto(bool &acerto_ant)
 {
-    GLfloat xOp, yOp, dirOp, xLuva, yLuva;
-    gOponente->getXYT(xOp, yOp, dirOp);
+    D3 posLuva;
+    D3 posOp;
+    GLfloat dirOp;
+    gOponente->getXYZT(posOp, dirOp);
 
     // LUVA DIREITA
-    getPosLuvaR(xLuva, yLuva);
-    GLfloat dtR = dist(xLuva, yLuva, xOp, yOp);
+    getPosLuvaR(posLuva);
+    GLfloat dtR = dist(posLuva, posOp);
 
     // LUVA ESQUERDA
-    getPosLuvaL(xLuva, yLuva);
-    GLfloat dtL = dist(xLuva, yLuva, xOp, yOp);
+    getPosLuvaL(posLuva);
+    GLfloat dtL = dist(posLuva, posOp);
 
     //printf("\n gdiffTheta1_R: %f \n gdiffTheta1_L: %f\n", gdiffTheta1_R, gdiffTheta1_L);
 
@@ -384,15 +394,15 @@ bool Lutador::acerto(bool &acerto_ant)
     bool acertoCab = ((bracoRCab && gdiffTheta1_R < 0) || (bracoLCab && gdiffTheta1_L < 0));
 
     // NARIZ OPONENTE
-    gOponente->getPosNariz(xOp, yOp);
+    gOponente->getPosNariz(posOp);
 
     // LUVA DIREITA NARIZ
-    getPosLuvaR(xLuva, yLuva);
-    dtR = dist(xLuva, yLuva, xOp, yOp);
+    getPosLuvaR(posLuva);
+    dtR = dist(posLuva, posOp);
 
     // LUVA ESQUERDA NARIZ
-    getPosLuvaL(xLuva, yLuva);
-    dtL = dist(xLuva, yLuva, xOp, yOp);
+    getPosLuvaL(posLuva);
+    dtL = dist(posLuva, posOp);
 
     //printf("\ndT: %f\nRAIOS: %f\n", dt, (rLuvas + rCabeca));
 
