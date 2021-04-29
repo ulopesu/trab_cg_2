@@ -284,7 +284,7 @@ void keyup(unsigned char key, int x, int y)
 
 void configLuz()
 {
-    GLfloat dArena = 2;
+    GLfloat dArena = -10;
     GLfloat dLux = 0.3;
     GLfloat corLuz[] = {dLux, dLux, dLux, 0.0};
     // LUZ 1 - CONFIG
