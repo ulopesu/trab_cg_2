@@ -1,7 +1,8 @@
 #include "objetos.h"
 
-GLfloat materialEmission[] = {0.0, 0.0, 0.0, 1.0};
-static GLfloat mat_specular[] = {0.3, 0.3, 0.3, 1};
+GLfloat mat_ambiente[] = {0.0, 0.0, 0.0, 0.0};
+GLfloat mat_emission[] = {0.0, 0.0, 0.0, 0.0};
+static GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
 static GLfloat mat_shininess[] = {100.0};
 
 void Objeto::free_obj()
@@ -11,13 +12,11 @@ void Objeto::free_obj()
 
 void Objeto::DesenhaComCor(Cor cor, int glTipo)
 {
-    glColor3f(1, 1, 1);
-
-    glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, cor.Cor2Vetor());
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, cor.Cor2Vetor());
+    glMaterialfv(GL_FRONT, GL_EMISSION, cor.Cor2Vetor());
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambiente);
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_EMISSION);
 
     glBegin(glTipo);
     for (int i = 0; i < numVtx; i++)
@@ -30,12 +29,10 @@ void Objeto::DesenhaComCor(Cor cor, int glTipo)
 
 void Objeto::DesenhaComTextura(GLuint texture, int glTipo)
 {
-    glColor3f(1, 1, 1);
-
-    glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
+    glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambiente);
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-
 
     glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -50,22 +47,20 @@ void Objeto::DesenhaComTextura(GLuint texture, int glTipo)
 }
 
 void DesenhaCuboGL(D3 posCubo, D3 posRelativa, D3 escala, Cor corCubo)
-{
+{   
 
     glPushAttrib(GL_ENABLE_BIT);
     glPushMatrix();
-        glColor3f(1, 1, 1);
-        glTranslatef(posCubo.X, posCubo.Y, posCubo.Z);
-        glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
-        glMaterialfv(GL_FRONT, GL_AMBIENT, corCubo.Cor2Vetor());
-        glMaterialfv(GL_FRONT, GL_DIFFUSE, corCubo.Cor2Vetor());
-        glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-        glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+    glTranslatef(posCubo.X, posCubo.Y, posCubo.Z);
 
-        //glColor3fv(corCubo.Cor2Vetor());
-        glScalef(escala.X, escala.Y, escala.Z);
-        glTranslatef(posRelativa.X, posRelativa.Y, posRelativa.Z);
-        glutSolidCube(1.0);
+    glMaterialfv(GL_FRONT, GL_EMISSION, mat_ambiente);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, corCubo.Cor2Vetor());
+    glMaterialfv(GL_FRONT, GL_SPECULAR, corCubo.Cor2Vetor());
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+    glScalef(escala.X, escala.Y, escala.Z);
+    glTranslatef(posRelativa.X, posRelativa.Y, posRelativa.Z);
+    glutSolidCube(1.0);
     glPopMatrix();
     glPopAttrib();
 }
