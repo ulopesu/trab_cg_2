@@ -124,7 +124,7 @@ void desenhaArena(GLfloat arenaWidth, GLfloat arenaHeight, GLfloat lut1rCabeca, 
     posRelativa = {0, 0, 0.5};
     escala = {lut1rCabeca / 2, lut1rCabeca / 2, lut1rCabeca * ALT_GRADE};
 
-    Cor corGrade = Cor((RGB){0.5, 0.0, 0.5});
+    Cor corGrade = Cor((RGB){1, 0, 1});
     DesenhaCuboGL(posCubo, posRelativa, escala, corGrade);
     posCubo = {-arenaWidth / 2, arenaHeight / 2, 0};
     DesenhaCuboGL(posCubo, posRelativa, escala, corGrade);

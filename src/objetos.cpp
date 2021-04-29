@@ -1,9 +1,9 @@
 #include "objetos.h"
 
 GLfloat emi = 0;
-GLfloat amb = 0;
+GLfloat amb = 1;
 GLfloat spc = 1;
-GLfloat dif = 0.4;
+GLfloat dif = 0.5;
 GLfloat mat_shininess = 100;
 
 GLfloat mat_emission[] = {emi, emi, emi, 1.0};
@@ -18,12 +18,11 @@ void Objeto::free_obj()
 
 void Objeto::DesenhaComCor(Cor cor, int glTipo)
 {
-    GLfloat mat_specular0[] = {0.0, 0.0, 0.0, 0.0};
     glPushAttrib(GL_ENABLE_BIT);
     glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
     glMaterialfv(GL_FRONT, GL_AMBIENT, cor.Cor2Vetor());
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular0);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, cor.Cor2Vetor());
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialf(GL_FRONT, GL_SHININESS, mat_shininess);
     glColor3f(1, 1, 1);
 
@@ -42,6 +41,7 @@ void Objeto::DesenhaComTextura(GLuint texture, int glTipo)
 {
     glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
     glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambiente);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialf(GL_FRONT, GL_SHININESS, mat_shininess);
 
@@ -70,7 +70,7 @@ void DesenhaCuboGL(D3 posCubo, D3 posRelativa, D3 escala, Cor corCubo)
 
     glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
     glMaterialfv(GL_FRONT, GL_AMBIENT, corCubo.Cor2Vetor());
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, corCubo.Cor2Vetor());
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialf(GL_FRONT, GL_SHININESS, mat_shininess);
 

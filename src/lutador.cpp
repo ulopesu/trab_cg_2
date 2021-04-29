@@ -24,7 +24,7 @@ Lutador::Lutador(string nome, D3 ponto, Cor *_cor,
     rCabeca = _tam * 0.5;
     gPos = ponto;
     gCorCabeca = _cor;
-    gCorCorpo = new Cor((RGB){0.3, 1, 1});
+    gCorCorpo = new Cor((RGB){3, 1.5, 0.5});
     rNariz = rCabeca / 5;
     tamBracos = rCabeca * 2;
     rLuvas = rCabeca / 2;

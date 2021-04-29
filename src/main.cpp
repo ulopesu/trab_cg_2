@@ -244,14 +244,20 @@ void keyPress(unsigned char key, int x, int y)
         if (modoNoturno)
         {
             glDisable(GL_LIGHT0);
+            glDisable(GL_LIGHT1);
+            glDisable(GL_LIGHT2);
+            glDisable(GL_LIGHT3);
+            glEnable(GL_LIGHT4);
             glEnable(GL_LIGHT5);
-            glEnable(GL_LIGHT6);
         }
         else
         {
-            glDisable(GL_LIGHT5);
-            glDisable(GL_LIGHT6);
             glEnable(GL_LIGHT0);
+            glEnable(GL_LIGHT1);
+            glEnable(GL_LIGHT2);
+            glEnable(GL_LIGHT3);
+            glDisable(GL_LIGHT4);
+            glDisable(GL_LIGHT5);
         }
         break;
     }
@@ -277,37 +283,37 @@ void keyup(unsigned char key, int x, int y)
 void configLuz()
 {
     GLfloat dArena = 2;
-    GLfloat dDif = 0.8;
+    GLfloat dDif = 0.3;
     GLfloat dSpe = 1.0;
 
     GLfloat luz_diffuse[] = {dDif, dDif, dDif, 1.0};
     GLfloat luz_specular[] = {dSpe, dSpe, dSpe, 1.0};
 
-    GLfloat luz0POS[] = {0, 0, lut1rCabeca * (ALT_GRADE - dArena), 1};
-
+    GLfloat luz1POS[] = {-(arenaWidth / 2) + dArena, -(arenaHeight / 2) + dArena, lut1rCabeca * (ALT_GRADE - dArena), 0};
     glLightfv(GL_LIGHT0, GL_DIFFUSE, luz_diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, luz_specular);
-    glLightfv(GL_LIGHT0, GL_POSITION, luz0POS);
+    glLightfv(GL_LIGHT0, GL_POSITION, luz1POS);
 
-    GLfloat luz1POS[] = {0, 0, lut1rCabeca * (ALT_GRADE)*10, 1};
-    glLightfv(GL_LIGHT1, GL_POSITION, luz1POS);
-    if (!modoNoturno)
-    {
-        glLightfv(GL_LIGHT1, GL_DIFFUSE, luz_diffuse);
-        glLightfv(GL_LIGHT1, GL_SPECULAR, luz_specular);
-    }
-    else
-    {
-        dDif = 0.1;
-        dSpe = 0.0;
-        GLfloat luz_diffuse2[] = {dDif, dDif, dDif, 1.0};
-        GLfloat luz_specular2[] = {dSpe, dSpe, dSpe, 1.0};
-        glLightfv(GL_LIGHT1, GL_DIFFUSE, luz_diffuse2);
-        glLightfv(GL_LIGHT1, GL_SPECULAR, luz_specular2);
-    }
+    // LUZ 2 - CONFIG
+    GLfloat luz2POS[] = {-(arenaWidth / 2) + dArena, (arenaHeight / 2) - dArena, lut1rCabeca * (ALT_GRADE - dArena), 0};
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, luz_diffuse);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, luz_specular);
+    glLightfv(GL_LIGHT1, GL_POSITION, luz2POS);
+
+    // LUZ 3 - CONFIG
+    GLfloat luz3POS[] = {(arenaWidth / 2) - dArena, -(arenaHeight / 2) + dArena, lut1rCabeca * (ALT_GRADE - dArena), 0};
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, luz_diffuse);
+    glLightfv(GL_LIGHT2, GL_SPECULAR, luz_specular);
+    glLightfv(GL_LIGHT2, GL_POSITION, luz3POS);
+
+    // LUZ 4 - CONFIG
+    GLfloat luz4POS[] = {(arenaWidth / 2) - dArena, (arenaHeight / 2) - dArena, lut1rCabeca * (ALT_GRADE - dArena), 0};
+    glLightfv(GL_LIGHT3, GL_DIFFUSE, luz_diffuse);
+    glLightfv(GL_LIGHT3, GL_SPECULAR, luz_specular);
+    glLightfv(GL_LIGHT3, GL_POSITION, luz4POS);
 
     // CONFIG HOLOFOTES
-
+dDif = 0.8;
     GLfloat spotPOS[] = {0.0, 0.0, lut1rCabeca * (ALT_GRADE), 1};
     D3 posLut1, posLut2;
     GLfloat theta, aberturaSpot = 10, potenciaSpot = 1;
@@ -315,22 +321,22 @@ void configLuz()
     lutador1->getXYZT(posLut1, theta);
     lutador2->getXYZT(posLut2, theta);
 
-    GLfloat luz5DIR[] = {posLut1.X, posLut1.Y, -posLut1.Z, 1};
-    GLfloat luz6DIR[] = {posLut2.X, posLut2.Y, -posLut2.Z, 1};
+    GLfloat luz5DIR[] = {posLut1.X, posLut1.Y, -posLut1.Z - lut1rCabeca, 1};
+    GLfloat luz6DIR[] = {posLut2.X, posLut2.Y, -posLut2.Z - lut2rCabeca, 1};
+
+    glLightfv(GL_LIGHT4, GL_DIFFUSE, luz_diffuse);
+    glLightfv(GL_LIGHT4, GL_SPECULAR, luz_specular);
+    glLightfv(GL_LIGHT4, GL_POSITION, spotPOS);
+    glLightf(GL_LIGHT4, GL_SPOT_CUTOFF, aberturaSpot);
+    glLightf(GL_LIGHT4, GL_SPOT_EXPONENT, potenciaSpot);
+    glLightfv(GL_LIGHT4, GL_SPOT_DIRECTION, luz5DIR);
 
     glLightfv(GL_LIGHT5, GL_DIFFUSE, luz_diffuse);
     glLightfv(GL_LIGHT5, GL_SPECULAR, luz_specular);
     glLightfv(GL_LIGHT5, GL_POSITION, spotPOS);
     glLightf(GL_LIGHT5, GL_SPOT_CUTOFF, aberturaSpot);
     glLightf(GL_LIGHT5, GL_SPOT_EXPONENT, potenciaSpot);
-    glLightfv(GL_LIGHT5, GL_SPOT_DIRECTION, luz5DIR);
-
-    glLightfv(GL_LIGHT6, GL_DIFFUSE, luz_diffuse);
-    glLightfv(GL_LIGHT6, GL_SPECULAR, luz_specular);
-    glLightfv(GL_LIGHT6, GL_POSITION, spotPOS);
-    glLightf(GL_LIGHT6, GL_SPOT_CUTOFF, aberturaSpot);
-    glLightf(GL_LIGHT6, GL_SPOT_EXPONENT, potenciaSpot);
-    glLightfv(GL_LIGHT6, GL_SPOT_DIRECTION, luz6DIR);
+    glLightfv(GL_LIGHT5, GL_SPOT_DIRECTION, luz6DIR);
 }
 
 void display(void)
@@ -501,6 +507,8 @@ void init(void)
 
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHT2);
+    glEnable(GL_LIGHT3);
 }
 
 void idle(void)
