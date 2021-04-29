@@ -98,26 +98,27 @@ GLuint LoadTextureRAW(const char *filename)
 
 void desenhaArena(GLfloat arenaWidth, GLfloat arenaHeight, GLfloat lut1rCabeca, GLuint *texturas)
 {
+    D3 posInical = {0, 0, 0};
     // DESENHA CHAO
-    Cor corCT = Cor((RGB){1, 1, 1});
-    Plano chao = Plano({arenaWidth / 2, arenaHeight / 2, 0}, Z);
+    Plano chao = Plano(posInical, {arenaWidth / 2, arenaHeight / 2, 0}, Z);
     chao.DesenhaComTextura(texturas[Chao]);
 
     // DESENHA TETO
-    Plano teto = Plano({arenaWidth / 2, arenaHeight / 2, lut1rCabeca * ALT_GRADE}, Z);
+    Plano teto = Plano(posInical, {arenaWidth / 2, arenaHeight / 2, lut1rCabeca * ALT_GRADE}, Z);
     teto.DesenhaComTextura(texturas[Ceu]);
 
     // DESENHA PAREDES
-    Plano p1 = Plano({arenaWidth / 2, lut1rCabeca * ALT_GRADE, arenaHeight / 2}, Y);
+    //posInical = {0, 0, lut1rCabeca * ALT_GRADE / 2};
+    Plano p1 = Plano(posInical, {arenaWidth / 2, lut1rCabeca * ALT_GRADE / 2, arenaHeight / 2}, Y);
     p1.DesenhaComTextura(texturas[Paredes]);
 
-    Plano p2 = Plano({arenaWidth / 2, lut1rCabeca * ALT_GRADE, -arenaHeight / 2}, Y);
+    Plano p2 = Plano(posInical, {arenaWidth / 2, lut1rCabeca * ALT_GRADE / 2, -arenaHeight / 2}, Y);
     p2.DesenhaComTextura(texturas[Paredes]);
 
-    Plano p3 = Plano({lut1rCabeca * ALT_GRADE, arenaHeight / 2, arenaWidth / 2}, X);
+    Plano p3 = Plano(posInical, {arenaHeight / 2, lut1rCabeca * ALT_GRADE / 2, arenaWidth / 2}, X);
     p3.DesenhaComTextura(texturas[Paredes]);
 
-    Plano p4 = Plano({lut1rCabeca * ALT_GRADE, arenaHeight / 2, -arenaWidth / 2}, X);
+    Plano p4 = Plano(posInical, {arenaHeight / 2, lut1rCabeca * ALT_GRADE / 2, -arenaWidth / 2}, X);
     p4.DesenhaComTextura(texturas[Paredes]);
 
     // DESENHA OS PILARES

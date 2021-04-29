@@ -1,9 +1,9 @@
 #include "plano.h"
 
-Plano::Plano(D3 dimensao, posPlano posNormal)
+Plano::Plano(D3 posInical, D3 dimensao, posPlano posNormal)
 {   
     numVtx=4;
-    pos = {0,0,0};
+    pos = posInical;
     int i;
     vtx = new Vertice[numVtx];
 
