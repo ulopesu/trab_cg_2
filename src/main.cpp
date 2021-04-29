@@ -427,6 +427,27 @@ void display(void)
     }
     else if (tipoCam == 4)
     {
+        D3 posJog2, olharPara;
+
+        GLfloat dX, dY, theta;
+
+        lutador2->getXYZT(posJog2, theta);
+
+        dX = -sin(theta * toRad);
+        dY = cos(theta * toRad);
+
+        olharPara.X = dX * arenaWidth;
+        olharPara.Y = dY * arenaHeight;
+        olharPara.Z = posJog2.Z + (lut1rCabeca / 4);
+
+        gluLookAt(
+            posJog2.X + dX * (lut1rCabeca / 2),
+            posJog2.Y + dY * (lut1rCabeca / 2),
+            olharPara.Z,
+            olharPara.X,
+            olharPara.Y,
+            olharPara.Z / 2,
+            0, 0, 1);
     }
 
     configLuz();
