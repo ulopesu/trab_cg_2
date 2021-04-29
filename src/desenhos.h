@@ -14,6 +14,7 @@ enum Texturas
     Chao,
     Paredes,
     Ceu,
+    Fundos,
 };
 
 void RasterChars(D3 pos, const char *text, Cor cor);

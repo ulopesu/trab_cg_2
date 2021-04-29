@@ -80,8 +80,8 @@ GLuint LoadTextureRAW(const char *filename)
     glBindTexture(GL_TEXTURE_2D, texture);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     //    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_REPLACE );
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexImage2D(GL_TEXTURE_2D,               //Always GL_TEXTURE_2D
                  0,                           //0 for now
                  GL_RGB,                      //Format OpenGL uses for image
@@ -111,13 +111,10 @@ void desenhaArena(GLfloat arenaWidth, GLfloat arenaHeight, GLfloat lut1rCabeca, 
     //posInical = {0, 0, lut1rCabeca * ALT_GRADE / 2};
     Plano p1 = Plano(posInical, {arenaWidth / 2, lut1rCabeca * ALT_GRADE / 2, arenaHeight / 2}, Y);
     p1.DesenhaComTextura(texturas[Paredes]);
-
     Plano p2 = Plano(posInical, {arenaWidth / 2, lut1rCabeca * ALT_GRADE / 2, -arenaHeight / 2}, Y);
     p2.DesenhaComTextura(texturas[Paredes]);
-
     Plano p3 = Plano(posInical, {arenaHeight / 2, lut1rCabeca * ALT_GRADE / 2, arenaWidth / 2}, X);
     p3.DesenhaComTextura(texturas[Paredes]);
-
     Plano p4 = Plano(posInical, {arenaHeight / 2, lut1rCabeca * ALT_GRADE / 2, -arenaWidth / 2}, X);
     p4.DesenhaComTextura(texturas[Paredes]);
 
@@ -127,7 +124,7 @@ void desenhaArena(GLfloat arenaWidth, GLfloat arenaHeight, GLfloat lut1rCabeca, 
     posRelativa = {0, 0, 0.5};
     escala = {lut1rCabeca / 2, lut1rCabeca / 2, lut1rCabeca * ALT_GRADE};
 
-    Cor corGrade = Cor((RGB){1, 1, 1});
+    Cor corGrade = Cor((RGB){0.5, 0.0, 0.5});
     DesenhaCuboGL(posCubo, posRelativa, escala, corGrade);
     posCubo = {-arenaWidth / 2, arenaHeight / 2, 0};
     DesenhaCuboGL(posCubo, posRelativa, escala, corGrade);
@@ -135,6 +132,18 @@ void desenhaArena(GLfloat arenaWidth, GLfloat arenaHeight, GLfloat lut1rCabeca, 
     DesenhaCuboGL(posCubo, posRelativa, escala, corGrade);
     posCubo = {arenaWidth / 2, -arenaHeight / 2, 0};
     DesenhaCuboGL(posCubo, posRelativa, escala, corGrade);
+
+    // DESENHA FUNDOS
+    //posInical = {0, 0, lut1rCabeca * ALT_GRADE / 2};
+    GLfloat dist = 1500;
+    Plano f1 = Plano(posInical, {dist, dist, dist}, Y);
+    f1.DesenhaComTextura(texturas[Fundos]);
+    Plano f2 = Plano(posInical, {dist, dist, -dist}, Y);
+    f2.DesenhaComTextura(texturas[Fundos]);
+    Plano f3 = Plano(posInical, {dist, dist, dist}, X);
+    f3.DesenhaComTextura(texturas[Fundos]);
+    Plano f4 = Plano(posInical, {dist, dist, -dist}, X);
+    f4.DesenhaComTextura(texturas[Fundos]);
 
     // DESENHA AS CORDAS
 }
