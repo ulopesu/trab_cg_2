@@ -108,7 +108,7 @@ private:
     void DesenhaLutador(D3 pos, Cor *cor,
                         GLfloat theta, GLfloat theta1_R, GLfloat theta2_R,
                         GLfloat theta1_L, GLfloat theta2_L, GLfloat rCab,
-                        GLfloat tBracos, GLfloat rLvs, GLfloat rClsao);
+                        GLfloat tBracos, GLfloat rLvs, GLfloat rClsao, bool isMM);
 
 public:
     Lutador(
@@ -132,13 +132,13 @@ public:
         return gPoss;
     }
 
-    void Desenha()
+    void Desenha(bool isMM)
     {
         DesenhaLutador(gPos, gCorCabeca, gTheta,
                        gTheta1_R, gTheta2_R,
                        gTheta1_L, gTheta2_L,
                        rCabeca, tamBracos,
-                       rLuvas, rColisao);
+                       rLuvas, rColisao, isMM);
     };
     void darSoco();
     void Move(GLfloat dY, GLfloat dTheta);

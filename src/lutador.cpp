@@ -111,7 +111,9 @@ void Lutador::DesenhaLutador(D3 pos, Cor *cor, GLfloat theta,
                              GLfloat theta1_R, GLfloat theta2_R,
                              GLfloat theta1_L, GLfloat theta2_L,
                              GLfloat rCab, GLfloat tBracos,
-                             GLfloat rLvs, GLfloat rClsao)
+                             GLfloat rLvs, GLfloat rClsao,
+                             bool isMM
+                             )
 {
 
     glPushMatrix();
@@ -125,10 +127,14 @@ void Lutador::DesenhaLutador(D3 pos, Cor *cor, GLfloat theta,
 
     DesenhaCorpo({0, 0, rCabeca * ((GLfloat)-1.5)});
     glPopMatrix();
-    gdiffTheta1_R = gTheta1_R_Ant - gTheta1_R;
+
+    
+    if(!isMM){
+            gdiffTheta1_R = gTheta1_R_Ant - gTheta1_R;
     gdiffTheta1_L = gTheta1_L_Ant - gTheta1_L;
     gTheta1_R_Ant = gTheta1_R;
     gTheta1_L_Ant = gTheta1_L;
+    }
 }
 
 bool Lutador::colisaoTelaX(GLfloat dXY)
@@ -381,10 +387,12 @@ bool Lutador::acerto(bool &acerto_ant)
 
     // LUVA DIREITA
     getPosLuvaR(posLuva);
+    posOp.Z = posLuva.Z;
     GLfloat dtR = dist(posLuva, posOp);
 
     // LUVA ESQUERDA
     getPosLuvaL(posLuva);
+    posOp.Z = posLuva.Z;
     GLfloat dtL = dist(posLuva, posOp);
 
     //printf("\n gdiffTheta1_R: %f \n gdiffTheta1_L: %f\n", gdiffTheta1_R, gdiffTheta1_L);
@@ -398,13 +406,15 @@ bool Lutador::acerto(bool &acerto_ant)
 
     // LUVA DIREITA NARIZ
     getPosLuvaR(posLuva);
+    posOp.Z = posLuva.Z;
     dtR = dist(posLuva, posOp);
 
     // LUVA ESQUERDA NARIZ
     getPosLuvaL(posLuva);
+    posOp.Z = posLuva.Z;
     dtL = dist(posLuva, posOp);
 
-    //printf("\ndT: %f\nRAIOS: %f\n", dt, (rLuvas + rCabeca));
+    //printf("\n dtR: %f\n dtL: %f\n", dtL, dtR);
 
     bool bracoRNariz = (dtR < rLuvas + rNariz);
     bool bracoLNariz = (dtL < rLuvas + rNariz);

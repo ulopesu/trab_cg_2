@@ -27,11 +27,11 @@ void RasterChars(D3 pos, const char *text, Cor cor)
 void imprimeTexto(D3 pos, const char *text, Cor cor)
 {
     glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(0, 1, 0, 1, -1, 1);
-    RasterChars(pos, text, cor);
-    glPopMatrix();
+        glPushMatrix();
+            glLoadIdentity();
+            glOrtho(0, 1, 0, 1, -1, 1);
+            RasterChars(pos, text, cor);
+        glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
 }
 
@@ -52,7 +52,7 @@ void imprimeReload()
     sprintf(str, "Press (R) to RELOAD!");
 
     Cor cor = Cor((RGB){1, 1, 1});
-    D3 pos = {0.7, 0.05, 0};
+    D3 pos = {0.1, 0.05, 0};
 
     imprimeTexto(pos, str, cor);
 }
@@ -94,6 +94,21 @@ GLuint LoadTextureRAW(const char *filename)
     delete image;
 
     return texture;
+}
+
+void desenhaArenaMM(GLfloat arenaWidth, GLfloat arenaHeight){
+
+    D3 escala, posCubo, posRelativa;
+    posCubo = {-arenaWidth / 2, 0, 0};
+    posRelativa = {0, 0, 0};
+    escala = {arenaWidth/50, arenaWidth, arenaWidth/50};
+
+    Cor corGrade = Cor((RGB){1, 0, 1});
+    DesenhaCuboGL(posCubo, posRelativa, escala, corGrade);
+
+    posCubo = {0, arenaHeight / 2, 0};
+    escala = {arenaWidth, arenaWidth/50, arenaWidth/50};
+    DesenhaCuboGL(posCubo, posRelativa, escala, corGrade);
 }
 
 void desenhaArena(GLfloat arenaWidth, GLfloat arenaHeight, GLfloat lut1rCabeca, GLuint *texturas)
@@ -144,6 +159,5 @@ void desenhaArena(GLfloat arenaWidth, GLfloat arenaHeight, GLfloat lut1rCabeca, 
     f3.DesenhaComTextura(texturas[Fundos]);
     Plano f4 = Plano(posInical, {dist, dist, -dist}, X);
     f4.DesenhaComTextura(texturas[Fundos]);
-
     // DESENHA AS CORDAS
 }

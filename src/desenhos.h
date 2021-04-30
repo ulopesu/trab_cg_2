@@ -23,6 +23,7 @@ void imprimePlacar(Lutador *lutador1, Lutador *lutador2);
 void imprimeReload();
 void imprimeVitoria(Lutador *lut, bool &FIM);
 GLuint LoadTextureRAW( const char * filename );
+void desenhaArenaMM(GLfloat arenaWidth, GLfloat arenaHeight);
 void desenhaArena(GLfloat arenaWidth, GLfloat arenaHeight, GLfloat lut1rCabeca, GLuint *texturas);
 
 #endif /* DESENHOS_H */

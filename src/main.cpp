@@ -313,7 +313,7 @@ void configLuz()
     glLightfv(GL_LIGHT3, GL_POSITION, luz4POS);
 
     // CONFIG HOLOFOTES
-dDif = 0.8;
+    dDif = 0.8;
     GLfloat spotPOS[] = {0.0, 0.0, lut1rCabeca * (ALT_GRADE), 1};
     D3 posLut1, posLut2;
     GLfloat theta, aberturaSpot = 10, potenciaSpot = 1;
@@ -339,9 +339,39 @@ dDif = 0.8;
     glLightfv(GL_LIGHT5, GL_SPOT_DIRECTION, luz6DIR);
 }
 
+void desenhaMiniMapa()
+{   
+    glPushMatrix();
+        glLoadIdentity ();
+        glMatrixMode(GL_PROJECTION);
+                glLoadIdentity ();
+                glViewport( 
+                    arenaWidth - 0.25 * arenaWidth, 0, 
+                    0.25 * arenaWidth, 0.25 * arenaHeight
+                );
+                glOrtho(-(arenaWidth / 2), (arenaWidth / 2),   //     X
+                        -(arenaHeight / 2), (arenaHeight / 2), //     Y
+                        -5000, 5000);                        //     Z
+
+            glPushAttrib(GL_ENABLE_BIT);
+                //glDisable(GL_LIGHTING);
+                glDisable(GL_TEXTURE_2D);
+                bool isMM = true;
+                lutador1->Desenha(isMM);
+                lutador2->Desenha(isMM);
+                desenhaArenaMM(arenaWidth, arenaHeight);
+            glPopAttrib(); 
+        glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+}
+
 void display(void)
-{
+{   
     glClearColor(0.0, 0.0, 0.0, 1.0);
+
+    glViewport(0, 0, arenaWidth, arenaHeight);
+    changeCamera(camAngle, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
@@ -460,8 +490,11 @@ void display(void)
 
     desenhaArena(arenaWidth, arenaHeight, lut1rCabeca, texturas);
 
-    lutador1->Desenha();
-    lutador2->Desenha();
+    bool isMM = false;
+    lutador1->Desenha(isMM);
+    lutador2->Desenha(isMM);
+
+    desenhaMiniMapa();
 
     glutSwapBuffers();
 }
