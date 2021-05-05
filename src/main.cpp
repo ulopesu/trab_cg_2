@@ -85,9 +85,9 @@ void atualizaLadoMouse()
 
 void drag(int _x, int _y)
 {
-    mouseX = (GLfloat)_x - (arenaWidth / 2);
-    _y = arenaHeight - _y;
-    mouseY = (GLfloat)_y - (arenaHeight / 2);
+    mouseX = (GLfloat)_x - (winWidth / 2);
+    _y = winHeight - _y;
+    mouseY = (GLfloat)_y - (winHeight / 2);
 
     atualizaLadoMouse();
 
@@ -118,9 +118,9 @@ void drag(int _x, int _y)
 void mouse(int button, int state, int _x, int _y)
 {
     mouseButton = button;
-    mouseX = (GLfloat)_x - (arenaWidth / 2);
-    _y = arenaHeight - _y;
-    mouseY = (GLfloat)_y - (arenaHeight / 2);
+    mouseX = (GLfloat)_x - (winWidth / 2);
+    _y = winHeight - _y;
+    mouseY = (GLfloat)_y - (winHeight / 2);
 
     mouseState = state;
 
@@ -142,7 +142,7 @@ void changeCamera(int angle, int w, int h)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(angle, (GLfloat)w / (GLfloat)h, 1, 5000.0);
+    gluPerspective(angle, (GLfloat)w / (GLfloat)h, 1, winWidth*10);
     glMatrixMode(GL_MODELVIEW);
 }
 
@@ -339,12 +339,12 @@ void desenhaMiniMapa()
         glMatrixMode(GL_PROJECTION);
                 glLoadIdentity ();
                 glViewport( 
-                    arenaWidth - 0.25 * arenaWidth, 0, 
-                    0.25 * arenaWidth, 0.25 * arenaHeight
+                    winWidth - 0.25 * winWidth, 0, 
+                    0.25 * winWidth, 0.25 * winHeight
                 );
-                glOrtho(-(arenaWidth / 2), (arenaWidth / 2),   //     X
-                        -(arenaHeight / 2), (arenaHeight / 2), //     Y
-                        -5000, 5000);                        //     Z
+                glOrtho(-(arenaWidth / 2), (arenaWidth / 2),    //     X
+                        -(arenaHeight / 2), (arenaHeight / 2),    //     Y
+                        -arenaWidth*10, arenaWidth*10);                        //     Z
 
             glPushAttrib(GL_ENABLE_BIT);
                 //glDisable(GL_LIGHTING);
@@ -362,7 +362,7 @@ void display(void)
 {   
     glClearColor(0.0, 0.0, 0.0, 1.0);
 
-    glViewport(0, 0, arenaWidth, arenaHeight);
+    glViewport(0, 0, winWidth, winHeight);
     changeCamera(camAngle, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -392,8 +392,8 @@ void display(void)
 
         lutador1->getXYZT(posJog1, theta);
 
-        dX = -sin(theta * toRad);
-        dY = cos(theta * toRad);
+        dX = -sin((theta-5) * toRad);
+        dY = cos((theta-5) * toRad);
 
         olharPara.X = dX * arenaWidth;
         olharPara.Y = dY * arenaHeight;
@@ -425,8 +425,8 @@ void display(void)
             posLuvaR.X - (dX * tamB),
             posLuvaR.Y - (dY * tamB),
             posLuvaR.Z,
-            posLuvaR.X + (dX * tamB * 500),
-            posLuvaR.Y + (dY * tamB * 500),
+            posLuvaR.X + (dX * tamB * winWidth),
+            posLuvaR.Y + (dY * tamB * winHeight),
             posLuvaR.Z + lut1rCabeca / 2,
             0, 0, 1);
     }
@@ -697,8 +697,8 @@ int main(int argc, char *argv[])
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
 
-    winWidth = arenaWidth;
-    winHeight = arenaHeight;
+    winWidth = 500;
+    winHeight = 500;
 
     glutInitWindowSize(winWidth, winHeight);
     glutInitWindowPosition(2000, 300);
