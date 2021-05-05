@@ -42,7 +42,7 @@ void imprimePlacar(Lutador *lutador1, Lutador *lutador2)
     sprintf(str, "| Player 1:  %d    |    Player 2:  %d |", ptsLut1, ptsLut2);
 
     Cor cor = Cor((RGB){1, 1, 1});
-    D3 pos = {0.3, 0.97, 0};
+    D3 pos = {0.2, 0.97, 0};
 
     imprimeTexto(pos, str, cor);
 }
@@ -62,7 +62,7 @@ void imprimeVitoria(Lutador *lut, bool &FIM)
     sprintf(str, "| %s !!! WIN !!! |", lut->getNome().c_str());
 
     Cor cor = Cor((RGB){1, 1, 1});
-    D3 pos = {0.38, 0.93, 0};
+    D3 pos = {0.35, 0.93, 0};
 
     imprimeTexto(pos, str, cor);
 

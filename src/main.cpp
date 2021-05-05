@@ -392,11 +392,11 @@ void display(void)
 
         lutador1->getXYZT(posJog1, theta);
 
-        dX = -sin((theta-5) * toRad);
-        dY = cos((theta-5) * toRad);
+        dX = -sin(theta * toRad);
+        dY = cos(theta * toRad);
 
-        olharPara.X = dX * arenaWidth;
-        olharPara.Y = dY * arenaHeight;
+        olharPara.X = dX * arenaWidth*100;
+        olharPara.Y = dY * arenaHeight*100;
         olharPara.Z = posJog1.Z + (lut1rCabeca / 4);
 
         gluLookAt(
