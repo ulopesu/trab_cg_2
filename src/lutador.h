@@ -36,8 +36,9 @@ enum LadoSoco
 #define LIM_INF_PHI_1 -45
 #define LIM_SUP_PHI_1 45
 #define LIM_INF_PHI_2 0
-#define LIM_SUP_PHI_2 30
+#define LIM_SUP_PHI_2 60
 
+#define VEL_PERNA 5     //MAIOR MAIS LENTA
 #define VEL_MOVE 5
 #define VEL_GIRO 2
 #define VEL_DAR_SOCO 4 / TAM_ARENA_Y
@@ -45,7 +46,7 @@ enum LadoSoco
 
 #define VEL_BOOT 0.2
 
-#define ALT_CAB_LUT 3
+#define ALT_CAB_LUT 4
 
 class Lutador
 {
@@ -76,6 +77,8 @@ class Lutador
     GLfloat rCabeca;
     GLfloat rNariz;
     GLfloat tamBracos;
+    GLfloat tamPernas;
+    GLfloat rPe;
     GLfloat rLuvas;
     GLfloat rColisao;
 
@@ -95,6 +98,8 @@ class Lutador
     bool gEhBoot;
 
 private:
+    void DesenhaPescoco(D3 pos);    
+    void DesenhaPerna(D3 pos, bool ehPernaDireita);
     GLfloat calculaAngJoelho();
     bool colisaoLut(GLfloat dXY);
     bool colisaoTelaX(GLfloat dXY);

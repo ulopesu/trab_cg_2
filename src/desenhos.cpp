@@ -111,7 +111,7 @@ void desenhaArenaMM(GLfloat arenaWidth, GLfloat arenaHeight){
     DesenhaCuboGL(posCubo, posRelativa, escala, corGrade);
 }
 
-void desenhaArena(GLfloat arenaWidth, GLfloat arenaHeight, GLfloat lut1rCabeca, GLuint *texturas)
+void desenhaArena(GLfloat arenaWidth, GLfloat arenaHeight, GLfloat lut1rCabeca, GLuint *texturas, bool ehModoNoturno)
 {
     D3 posInical = {0, 0, 0};
     // DESENHA CHAO
@@ -123,7 +123,9 @@ void desenhaArena(GLfloat arenaWidth, GLfloat arenaHeight, GLfloat lut1rCabeca, 
     teto.DesenhaComTextura(texturas[Ceu]);
 
     // DESENHA PAREDES
-    //posInical = {0, 0, lut1rCabeca * ALT_GRADE / 2};
+    if(ehModoNoturno){
+        posInical = {0, 0, lut1rCabeca * ALT_GRADE / 2};
+    }
     Plano p1 = Plano(posInical, {arenaWidth / 2, lut1rCabeca * ALT_GRADE / 2, arenaHeight / 2}, Y);
     p1.DesenhaComTextura(texturas[Paredes]);
     Plano p2 = Plano(posInical, {arenaWidth / 2, lut1rCabeca * ALT_GRADE / 2, -arenaHeight / 2}, Y);
@@ -149,15 +151,16 @@ void desenhaArena(GLfloat arenaWidth, GLfloat arenaHeight, GLfloat lut1rCabeca, 
     DesenhaCuboGL(posCubo, posRelativa, escala, corGrade);
 
     // DESENHA FUNDOS
-    //posInical = {0, 0, lut1rCabeca * ALT_GRADE / 2};
-    GLfloat dist = 1500;
-    Plano f1 = Plano(posInical, {dist, dist, dist}, Y);
-    f1.DesenhaComTextura(texturas[Fundos]);
-    Plano f2 = Plano(posInical, {dist, dist, -dist}, Y);
-    f2.DesenhaComTextura(texturas[Fundos]);
-    Plano f3 = Plano(posInical, {dist, dist, dist}, X);
-    f3.DesenhaComTextura(texturas[Fundos]);
-    Plano f4 = Plano(posInical, {dist, dist, -dist}, X);
-    f4.DesenhaComTextura(texturas[Fundos]);
-    // DESENHA AS CORDAS
+    if(!ehModoNoturno) {
+        posInical = {0, 0, -lut1rCabeca * ALT_GRADE / 2};
+        GLfloat dist = 1500;
+        Plano f1 = Plano(posInical, {dist, dist, dist}, Y);
+        f1.DesenhaComTextura(texturas[Fundos]);
+        Plano f2 = Plano(posInical, {dist, dist, -dist}, Y);
+        f2.DesenhaComTextura(texturas[Fundos]);
+        Plano f3 = Plano(posInical, {dist, dist, dist}, X);
+        f3.DesenhaComTextura(texturas[Fundos]);
+        Plano f4 = Plano(posInical, {dist, dist, -dist}, X);
+        f4.DesenhaComTextura(texturas[Fundos]);
+    }
 }

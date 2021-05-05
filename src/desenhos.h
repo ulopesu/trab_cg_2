@@ -24,7 +24,7 @@ void imprimeReload();
 void imprimeVitoria(Lutador *lut, bool &FIM);
 GLuint LoadTextureRAW( const char * filename );
 void desenhaArenaMM(GLfloat arenaWidth, GLfloat arenaHeight);
-void desenhaArena(GLfloat arenaWidth, GLfloat arenaHeight, GLfloat lut1rCabeca, GLuint *texturas);
+void desenhaArena(GLfloat arenaWidth, GLfloat arenaHeight, GLfloat lut1rCabeca, GLuint *texturas, bool ehModoNoturno);
 
 #endif /* DESENHOS_H */
 

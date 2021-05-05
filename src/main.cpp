@@ -481,7 +481,7 @@ void display(void)
 
     configLuz();
 
-    desenhaArena(arenaWidth, arenaHeight, lut1rCabeca, texturas);
+    desenhaArena(arenaWidth, arenaHeight, lut1rCabeca, texturas, modoNoturno);
 
     bool isMM = false;
     lutador1->Desenha(isMM);

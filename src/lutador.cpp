@@ -28,11 +28,13 @@ Lutador::Lutador(string nome, D3 ponto, Cor *_cor,
     rCabeca = _tam * 0.5;
     gPos = ponto;
     gCorCabeca = _cor;
-    gCorCorpo = new Cor((RGB){3, 1.5, 0.5});
+    gCorCorpo = new Cor((RGB){1, 1, 1});
     rNariz = rCabeca / 5;
     tamBracos = rCabeca * 2;
     rLuvas = rCabeca / 2;
     rColisao = rCabeca * 3;
+    tamPernas = rCabeca*1.5;
+    rPe = rCabeca / 2;
 
     // PRESET DE SOCO
     gSocoStatus = false;
@@ -111,6 +113,46 @@ void Lutador::DesenhaRaioColisao(D3 pos)
     circ.desenhaPontos(3, newCor);
 }
 
+
+void Lutador::DesenhaPerna(D3 pos, bool ehPernaDireita){
+    D3 escala = {tamPernas / 4, tamPernas / 4, tamPernas};
+    D3 posRelativa = {0, 0, -0.5};
+
+    glPushMatrix();
+    glTranslatef(pos.X, pos.Y, pos.Z);
+
+    GLfloat phi2;
+    if(ehPernaDireita){
+        glRotatef(gPhi1, 1, 0, 0);
+        phi2 = gPhi2_R;
+    } else {
+        glRotatef(-gPhi1, 1, 0, 0);
+        phi2 = gPhi2_L;
+    }
+    DesenhaCuboGL({0, 0, 0}, posRelativa, escala, *gCorCorpo);
+    glTranslatef(0, 0, -tamPernas);
+    glRotatef(-phi2, 1, 0, 0);
+    DesenhaCuboGL({0, 0, 0}, posRelativa, escala, *gCorCorpo);
+    glTranslatef(0, 0, -tamPernas-rCabeca/4);
+    Esfera pe = Esfera({0, 0, 0}, rPe, 5);
+    pe.DesenhaComCor(Cor((RGB){0,0,0}));
+    glPopMatrix();
+
+    pe.free_obj();
+}
+
+void Lutador::DesenhaPescoco(D3 pos)
+{
+    D3 escala = {rCabeca / 3, rCabeca / 3, rCabeca*2};
+    D3 posRelativa = {0, 0, -0.5};
+
+    glPushMatrix();
+    glTranslatef(pos.X, pos.Y, pos.Z);
+    DesenhaCuboGL({0, 0, 0}, posRelativa, escala, *gCorCorpo);
+    glPopMatrix();
+}
+
+
 void Lutador::DesenhaLutador(D3 pos, Cor *cor, GLfloat theta,
                              GLfloat theta1_R, GLfloat theta2_R,
                              GLfloat theta1_L, GLfloat theta2_L,
@@ -127,8 +169,12 @@ void Lutador::DesenhaLutador(D3 pos, Cor *cor, GLfloat theta,
     DesenhaBraco({rCabeca, 0, rCabeca * (-2)}, (-85 + theta1_R), theta2_R, tamBracos, rLuvas); // DIREITA
     DesenhaBraco({-rCabeca, 0, rCabeca * (-2)}, 85 - theta1_L, -theta2_L, tamBracos, rLuvas);  // ESQUERDA
     DesenhaCabeca({0, 0, 0});
+   
+    DesenhaPescoco({0, 0, -rCabeca/2});
 
     DesenhaCorpo({0, 0, rCabeca * ((GLfloat)-1.5)});
+    DesenhaPerna({rCabeca - (tamPernas/4), 0, rCabeca * ((GLfloat)-4.5)}, true);
+    DesenhaPerna({-rCabeca + (tamPernas/4), 0, rCabeca * ((GLfloat)-4.5)}, false);
     glPopMatrix();
 
     if (!isMM)
@@ -198,8 +244,8 @@ bool Lutador::colisaoY(GLfloat dXY)
 GLfloat Lutador::calculaAngJoelho()
 {
     GLfloat aux;
-    aux = (gPhi1 + 45) * 2;
-    return sin(aux * toRad) * 30;
+    aux = (gPhi1 + LIM_SUP_PHI_1) * 2;
+    return sin(aux * toRad) * LIM_SUP_PHI_2;
 }
 
 void Lutador::Move(GLfloat dXY, GLfloat dTheta)
@@ -220,8 +266,6 @@ void Lutador::Move(GLfloat dXY, GLfloat dTheta)
             gPos.Y += dXY * cos(gTheta * toRad);
         }
 
-        dXY = dXY > 0 ? 1 : -1;
-
         // ANDANDO PRA FRENTE
         bool pFrente = dXY > 0;
 
@@ -234,9 +278,20 @@ void Lutador::Move(GLfloat dXY, GLfloat dTheta)
             gLadoAnda = false;
         }
 
-        dXY = ((gLadoAnda && pFrente) || (!gLadoAnda && !pFrente)) ? 1 : -1;
+        dXY = ((gLadoAnda && pFrente) || (!gLadoAnda && !pFrente)) ? (fabs(dXY)/VEL_PERNA) : -(fabs(dXY)/VEL_PERNA);
 
-        gPhi1 += dXY;
+        if ((gPhi1 += dXY) > LIM_SUP_PHI_1)
+        {
+            gPhi1 = LIM_SUP_PHI_1;
+        }
+        else if ((gPhi1 += dXY) < LIM_INF_PHI_1)
+        {
+            gPhi1 = LIM_INF_PHI_1;
+        }
+        else
+        {
+            gPhi1 += dXY;
+        }
 
         if (gLadoAnda)
         {
@@ -249,8 +304,8 @@ void Lutador::Move(GLfloat dXY, GLfloat dTheta)
             gPhi2_L = calculaAngJoelho();
         }
 
-        printf("gPhi1: %.2f\n", gPhi1);
-        printf("gPhi2_R: %.2f gPhi2_L: %.2f\n", gPhi2_R, gPhi2_L);
+        //printf("gPhi1: %.2f\n", gPhi1);
+        //printf("gPhi2_R: %.2f gPhi2_L: %.2f\n", gPhi2_R, gPhi2_L);
     }
 
     if (gTheta > 360 || gTheta < -360)
@@ -258,7 +313,7 @@ void Lutador::Move(GLfloat dXY, GLfloat dTheta)
         gTheta = fmod(gTheta, 360);
     }
 
-    printf("DXY: %.2f\n", dXY);
+    //printf("DXY: %.2f\n", dXY);
     //printf("gPos.X: %.2f gPos.Y: %.2f\n", gPos.X, gPos.Y);
 }
 
