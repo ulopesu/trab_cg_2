@@ -14,9 +14,13 @@ Lutador::Lutador(string nome, D3 ponto, Cor *_cor,
     gTheta = _theta;
     gTheta1_R = LIM_INF_THETA_1;
     gTheta2_R = LIM_INF_THETA_2;
-
     gTheta1_L = LIM_INF_THETA_1;
     gTheta2_L = LIM_INF_THETA_2;
+
+    gLadoAnda = true;
+    gPhi1 = LIM_INF_PHI_1;
+    gPhi2_R = LIM_INF_PHI_2;
+    gPhi2_L = LIM_INF_PHI_2;
 
     GLfloat dir[1][4];
 
@@ -112,8 +116,7 @@ void Lutador::DesenhaLutador(D3 pos, Cor *cor, GLfloat theta,
                              GLfloat theta1_L, GLfloat theta2_L,
                              GLfloat rCab, GLfloat tBracos,
                              GLfloat rLvs, GLfloat rClsao,
-                             bool isMM
-                             )
+                             bool isMM)
 {
 
     glPushMatrix();
@@ -128,12 +131,12 @@ void Lutador::DesenhaLutador(D3 pos, Cor *cor, GLfloat theta,
     DesenhaCorpo({0, 0, rCabeca * ((GLfloat)-1.5)});
     glPopMatrix();
 
-    
-    if(!isMM){
-            gdiffTheta1_R = gTheta1_R_Ant - gTheta1_R;
-    gdiffTheta1_L = gTheta1_L_Ant - gTheta1_L;
-    gTheta1_R_Ant = gTheta1_R;
-    gTheta1_L_Ant = gTheta1_L;
+    if (!isMM)
+    {
+        gdiffTheta1_R = gTheta1_R_Ant - gTheta1_R;
+        gdiffTheta1_L = gTheta1_L_Ant - gTheta1_L;
+        gTheta1_R_Ant = gTheta1_R;
+        gTheta1_L_Ant = gTheta1_L;
     }
 }
 
@@ -192,9 +195,15 @@ bool Lutador::colisaoY(GLfloat dXY)
     return colisaoTelaY(dXY);
 }
 
+GLfloat Lutador::calculaAngJoelho()
+{
+    GLfloat aux;
+    aux = (gPhi1 + 45) * 2;
+    return sin(aux * toRad) * 30;
+}
+
 void Lutador::Move(GLfloat dXY, GLfloat dTheta)
 {
-    //GLfloat toRad = M_PI / 180;
     dXY *= VEL_MOVE;
     dTheta *= VEL_GIRO;
     gTheta += dTheta;
@@ -210,16 +219,47 @@ void Lutador::Move(GLfloat dXY, GLfloat dTheta)
         {
             gPos.Y += dXY * cos(gTheta * toRad);
         }
-    }
-    else
-    {
-        if (gTheta > 360 || gTheta < -360)
+
+        dXY = dXY > 0 ? 1 : -1;
+
+        // ANDANDO PRA FRENTE
+        bool pFrente = dXY > 0;
+
+        if ((gPhi1 == LIM_INF_PHI_1 && pFrente) || (gPhi1 == LIM_SUP_PHI_1 && !pFrente))
         {
-            gTheta = fmod(gTheta, 360);
+            gLadoAnda = true;
         }
+        else if ((gPhi1 == LIM_INF_PHI_1 && !pFrente) || (gPhi1 == LIM_SUP_PHI_1 && pFrente))
+        {
+            gLadoAnda = false;
+        }
+
+        dXY = ((gLadoAnda && pFrente) || (!gLadoAnda && !pFrente)) ? 1 : -1;
+
+        gPhi1 += dXY;
+
+        if (gLadoAnda)
+        {
+            gPhi2_L = 0;
+            gPhi2_R = calculaAngJoelho();
+        }
+        else
+        {
+            gPhi2_R = 0;
+            gPhi2_L = calculaAngJoelho();
+        }
+
+        printf("gPhi1: %.2f\n", gPhi1);
+        printf("gPhi2_R: %.2f gPhi2_L: %.2f\n", gPhi2_R, gPhi2_L);
     }
 
-    //printf("gPos.X: %.2f gPos.Y: %.2f\n", cos(dTheta), sin(dTheta));
+    if (gTheta > 360 || gTheta < -360)
+    {
+        gTheta = fmod(gTheta, 360);
+    }
+
+    printf("DXY: %.2f\n", dXY);
+    //printf("gPos.X: %.2f gPos.Y: %.2f\n", gPos.X, gPos.Y);
 }
 
 void Lutador::controleSoco(GLfloat dSoco, LadoSoco ladoSoco)
@@ -328,7 +368,7 @@ void Lutador::getPosLuvaR(D3 &posLuvaR)
 
     posLuvaR.X = mtx_lut[0][0];
     posLuvaR.Y = mtx_lut[1][0];
-    
+
     GLfloat dZ = (gTheta1_R + 50) / 135 * 2 * tamBracos;
     dZ = sin(30 * toRad) * dZ;
     posLuvaR.Z = gPos.Z - (2 * rCabeca) + dZ;

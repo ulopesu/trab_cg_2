@@ -140,14 +140,7 @@ void mouse(int button, int state, int _x, int _y)
 
 void changeCamera(int angle, int w, int h)
 {
-
     glMatrixMode(GL_PROJECTION);
-
-    //if(miniMap){
-    //glOrtho(-(arenaWidth / 2), (arenaWidth / 2),   //     X
-    //        -(arenaHeight / 2), (arenaHeight / 2), //     Y
-    //        -10000, 10000);                        //     Z
-    //}
     glLoadIdentity();
     gluPerspective(angle, (GLfloat)w / (GLfloat)h, 1, 5000.0);
     glMatrixMode(GL_MODELVIEW);

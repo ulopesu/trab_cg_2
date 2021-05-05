@@ -30,9 +30,13 @@ enum LadoSoco
 
 #define LIM_INF_THETA_1 -50
 #define LIM_INF_THETA_2 140
-
 #define LIM_SUP_THETA_1 85
 #define LIM_SUP_THETA_2 15
+
+#define LIM_INF_PHI_1 -45
+#define LIM_SUP_PHI_1 45
+#define LIM_INF_PHI_2 0
+#define LIM_SUP_PHI_2 30
 
 #define VEL_MOVE 5
 #define VEL_GIRO 2
@@ -64,6 +68,11 @@ class Lutador
     GLfloat gTheta1_L; // ANGULO DO BRACO ESQUERDO
     GLfloat gTheta2_L; // ANGULO DO ANTEBRACO ESQUERDO
 
+    bool gLadoAnda;
+    GLfloat gPhi1;      // ANGULO DAS COXAS
+    GLfloat gPhi2_R;    // ANGULO DO JOELHO DIREITO
+    GLfloat gPhi2_L;    // ANGULO DO JOELHO ESQUERDO
+
     GLfloat rCabeca;
     GLfloat rNariz;
     GLfloat tamBracos;
@@ -86,6 +95,7 @@ class Lutador
     bool gEhBoot;
 
 private:
+    GLfloat calculaAngJoelho();
     bool colisaoLut(GLfloat dXY);
     bool colisaoTelaX(GLfloat dXY);
     bool colisaoTelaY(GLfloat dXY);
